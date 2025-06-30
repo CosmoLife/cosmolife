@@ -2,6 +2,7 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
+import PublicOffer from '@/components/PublicOffer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -64,7 +65,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-white/10 py-8">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
               <img 
                 src="/lovable-uploads/c078ebf8-4837-4c3a-a7fb-8ab50ca3e76c.png" 
@@ -75,6 +76,17 @@ const Index = () => {
             </div>
             <div className="text-white/60 text-sm">
               © 2024 CosmoFund. Все права защищены.
+            </div>
+          </div>
+          
+          {/* Legal Links */}
+          <div className="border-t border-white/10 pt-4">
+            <div className="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-6">
+              <PublicOffer />
+              <span className="text-white/40 hidden md:inline">•</span>
+              <span className="text-white/60 text-sm">
+                Инвестиции связаны с высоким риском. Не предназначено для резидентов США.
+              </span>
             </div>
           </div>
         </div>
