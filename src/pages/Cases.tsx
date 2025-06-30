@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 
 const casesData = [
@@ -11,8 +10,8 @@ const casesData = [
   {
     title: "Создание платформы для метавселенной",
     description: "Разработка иммерсивной платформы с 3D-мирами и NFT-интеграцией",
-    result: "2М+ активных пользователей",
-    tech: ["Unity", "Blockchain", "WebGL", "Smart Contracts"]
+    result: "В разработке",
+    tech: ["UE5", "Blockchain", "WebGL", "Smart Contracts"]
   },
   {
     title: "Продвижение сетевой продуктовой компании",
@@ -59,7 +58,7 @@ const casesData = [
   {
     title: "Социальная сеть для креаторов",
     description: "Платформа для монетизации контента с NFT и криптовалютами",
-    result: "10М+ пользователей",
+    result: "100К+ пользователей",
     tech: ["Social Features", "Crypto Payments", "Content Management", "NFT"]
   },
   {
@@ -184,14 +183,24 @@ const Cases = () => {
                 Cosmo Lab занимается созданием сайтов, проактивных агентов, продвижением. 
                 Имеет опыт более 100 проектов для клиентов и более 30 собственных запусков.
               </p>
-              <a 
-                href="https://t.me/cosmofund" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-block bg-gradient-to-r from-cosmo-blue to-cosmo-purple hover:from-cosmo-purple hover:to-cosmo-green text-white font-bold py-4 px-8 rounded-lg neon-border animate-neon-pulse transition-all"
-              >
-                Обсудить проект в Telegram
-              </a>
+              <div className="flex flex-col md:flex-row gap-4 justify-center">
+                <a 
+                  href="https://t.me/cosmofund" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block bg-gradient-to-r from-cosmo-blue to-cosmo-purple hover:from-cosmo-purple hover:to-cosmo-green text-white font-bold py-4 px-8 rounded-lg neon-border animate-neon-pulse transition-all"
+                >
+                  Обсудить проект в Telegram
+                </a>
+                <a 
+                  href="https://wa.me/77777777777" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block bg-gradient-to-r from-cosmo-purple to-cosmo-green hover:from-cosmo-green hover:to-cosmo-blue text-white font-bold py-4 px-8 rounded-lg neon-border animate-neon-pulse transition-all"
+                >
+                  Обсудить проект в WhatsApp
+                </a>
+              </div>
             </div>
           </div>
         </div>

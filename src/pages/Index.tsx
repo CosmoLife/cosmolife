@@ -57,6 +57,20 @@ const Index = () => {
                   Задать вопрос в Telegram
                 </Button>
               </a>
+
+              <a 
+                href="https://wa.me/77777777777" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="border-cosmo-purple text-cosmo-purple hover:bg-cosmo-purple hover:text-white py-6 px-12 text-xl"
+                >
+                  Задать вопрос в WhatsApp
+                </Button>
+              </a>
             </div>
           </div>
         </div>
@@ -75,7 +89,7 @@ const Index = () => {
               <span className="text-xl font-bold text-white">COSMO LIFE</span>
             </div>
             <div className="text-white/60 text-sm">
-              © 2024 CosmoFund. Все права защищены.
+              © 2025 Cosmo Life. Все права защищены.
             </div>
           </div>
           
