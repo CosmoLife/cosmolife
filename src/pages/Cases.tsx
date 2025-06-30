@@ -14,6 +14,12 @@ const casesData = [
     tech: ["UE5", "Blockchain", "WebGL", "Smart Contracts"]
   },
   {
+    title: "Создание 5 NFT коллекций",
+    description: "Разработка и запуск уникальных NFT коллекций с генеративным искусством и утилити",
+    result: "Продажи на $3М+",
+    tech: ["NFT", "Generative Art", "Smart Contracts", "Marketplace"]
+  },
+  {
     title: "Продвижение сетевой продуктовой компании",
     description: "Комплексная маркетинговая стратегия для сети ресторанов быстрого питания",
     result: "Рост продаж на 280%",

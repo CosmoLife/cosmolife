@@ -7,11 +7,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
+import ProfileEditor from '@/components/ProfileEditor';
+import PaymentConfirmation from '@/components/PaymentConfirmation';
+import { Copy, Info } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, investments, addInvestment, updateInvestmentStatus } = useAuth();
   const [investmentAmount, setInvestmentAmount] = useState(50000);
   const [showPayment, setShowPayment] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState<string | null>(null);
+  const [showSellInfo, setShowSellInfo] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -25,10 +30,18 @@ const Dashboard = () => {
 
   const totalInvestment = investments.reduce((sum, inv) => sum + inv.amount, 0);
   const totalPercentage = investments.reduce((sum, inv) => sum + inv.percentage, 0);
-  const yearlyReturn = totalPercentage * 357600000 / 100; // Базовая прибыль 357.6 млн рублей
-  const potentialReturn = totalPercentage * 178800000000 / 100; // Потенциальная прибыль 178.8 млрд рублей
+  const yearlyReturn = totalPercentage * 357600000 / 100;
+  const potentialReturn = totalPercentage * 178800000000 / 100;
 
-  const handleInvestment = async (paymentMethod: 'yoomoney' | 'telegram') => {
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Скопировано",
+      description: `${label} скопирован в буфер обмена`,
+    });
+  };
+
+  const handleInvestment = async (paymentMethod: 'yoomoney' | 'telegram' | 'usdt' | 'card') => {
     if (investmentAmount < 50000) {
       toast({
         title: "Ошибка",
@@ -40,16 +53,24 @@ const Dashboard = () => {
 
     await addInvestment(investmentAmount, paymentMethod);
     
-    if (paymentMethod === 'yoomoney') {
-      window.open(`https://yoomoney.ru/to/410019220622751/${investmentAmount}`, '_blank');
-    } else {
-      // Здесь будет ссылка на Telegram для оплаты
-      window.open('https://t.me/cosmofund', '_blank');
+    switch (paymentMethod) {
+      case 'yoomoney':
+        window.open(`https://yoomoney.ru/to/410019220622751/${investmentAmount}`, '_blank');
+        break;
+      case 'telegram':
+        window.open('https://t.me/CosmoLifeInvest_bot', '_blank');
+        break;
+      case 'usdt':
+        // Показываем адрес кошелька
+        break;
+      case 'card':
+        // Открываем Telegram или WhatsApp для запроса данных карты
+        break;
     }
     
     toast({
       title: "Инвестиция создана!",
-      description: "Перейдите по ссылке для оплаты. После оплаты статус обновится автоматически.",
+      description: "Следуйте инструкциям для оплаты. После оплаты загрузите подтверждение.",
     });
     
     setShowPayment(false);
@@ -71,6 +92,9 @@ const Dashboard = () => {
                 Добро пожаловать, {user.email}
               </p>
             </div>
+            
+            {/* Компонент редактирования профиля */}
+            <ProfileEditor />
             
             {/* Общая статистика */}
             <div className="grid md:grid-cols-4 gap-6 mb-12">
@@ -102,11 +126,48 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+
+            {/* Кнопка продажи доли */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border mb-12">
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  onClick={() => setShowSellInfo(true)}
+                  className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-3 px-6"
+                >
+                  Продать мою долю
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSellInfo(true)}
+                  className="text-white/60 hover:text-white"
+                >
+                  <Info className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              {showSellInfo && (
+                <div className="mt-4 p-4 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
+                  <p className="text-yellow-200 text-sm">
+                    <strong>Внимание:</strong> При продаже доли через платформу мы берем комиссию 20% от суммы сделки.
+                    Для продажи обратитесь в наш Telegram или WhatsApp.
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowSellInfo(false)}
+                    className="mt-2 text-yellow-200 hover:text-white"
+                  >
+                    Понятно
+                  </Button>
+                </div>
+              )}
+            </div>
             
             {/* Новая инвестиция */}
             <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-3xl p-8 neon-border mb-12">
               <h2 className="text-3xl font-bold text-cosmo-blue mb-6 neon-text">
-                Увеличить инвестиции
+                Инвестировать
               </h2>
               
               {!showPayment ? (
@@ -118,11 +179,11 @@ const Dashboard = () => {
                     onClick={() => setShowPayment(true)}
                     className="bg-gradient-to-r from-cosmo-blue to-cosmo-purple hover:from-cosmo-purple hover:to-cosmo-green text-white font-bold py-4 px-8 text-lg neon-border animate-neon-pulse"
                   >
-                    Инвестировать еще
+                    Инвестировать
                   </Button>
                 </div>
               ) : (
-                <div className="max-w-md mx-auto">
+                <div className="max-w-2xl mx-auto">
                   <div className="space-y-6">
                     <div>
                       <Label htmlFor="amount" className="text-white mb-2 block">
@@ -142,20 +203,90 @@ const Dashboard = () => {
                       </p>
                     </div>
                     
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <Button
-                        onClick={() => handleInvestment('yoomoney')}
-                        className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white font-bold py-3"
-                      >
-                        Оплатить через ЮMoney
-                      </Button>
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-bold text-white mb-4">Способы оплаты:</h3>
                       
-                      <Button
-                        onClick={() => handleInvestment('telegram')}
-                        className="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-bold py-3"
-                      >
-                        Оплатить в Telegram
-                      </Button>
+                      {/* ЮMoney */}
+                      <div className="bg-white/5 rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-bold text-purple-300">ЮMoney</span>
+                          <Button
+                            onClick={() => handleInvestment('yoomoney')}
+                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                          >
+                            Оплатить
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* USDT */}
+                      <div className="bg-white/5 rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-bold text-green-300">USDT BEP-20</span>
+                          <Button
+                            onClick={() => copyToClipboard('0x9e00d62d50ef12d41394082d63aee3abf286d0c5', 'Адрес кошелька')}
+                            variant="outline"
+                            size="sm"
+                            className="border-green-500 text-green-300 hover:bg-green-500 hover:text-white"
+                          >
+                            <Copy className="w-4 h-4 mr-2" />
+                            Копировать адрес
+                          </Button>
+                        </div>
+                        <p className="text-xs text-white/60">0x9e00d62d50ef12d41394082d63aee3abf286d0c5</p>
+                        <Button
+                          onClick={() => handleInvestment('usdt')}
+                          className="bg-green-600 hover:bg-green-700 text-white mt-2 w-full"
+                        >
+                          Я отправил USDT
+                        </Button>
+                      </div>
+                      
+                      {/* Telegram */}
+                      <div className="bg-white/5 rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-bold text-blue-300">Telegram</span>
+                          <Button
+                            onClick={() => handleInvestment('telegram')}
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                          >
+                            Перейти к боту
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {/* Карты доверенных лиц */}
+                      <div className="bg-white/5 rounded-lg p-4">
+                        <div className="mb-4">
+                          <span className="font-bold text-orange-300">Перевод на карты в СНГ</span>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-2">
+                          <Button
+                            onClick={() => handleInvestment('card')}
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
+                          >
+                            Запросить данные карты
+                          </Button>
+                          <a 
+                            href="https://t.me/cosmofund" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">
+                              В Telegram
+                            </Button>
+                          </a>
+                          <a 
+                            href="https://wa.me/77777777777" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            <Button className="bg-green-600 hover:bg-green-700 text-white w-full">
+                              В WhatsApp
+                            </Button>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                     
                     <Button
@@ -198,7 +329,12 @@ const Dashboard = () => {
                           </div>
                           {investment.paymentMethod && (
                             <div className="text-sm text-cosmo-blue">
-                              Способ оплаты: {investment.paymentMethod === 'yoomoney' ? 'ЮMoney' : 'Telegram'}
+                              Способ оплаты: {
+                                investment.paymentMethod === 'yoomoney' ? 'ЮMoney' : 
+                                investment.paymentMethod === 'telegram' ? 'Telegram' :
+                                investment.paymentMethod === 'usdt' ? 'USDT' :
+                                'Карта'
+                              }
                             </div>
                           )}
                         </div>
@@ -220,13 +356,22 @@ const Dashboard = () => {
                           </div>
                           
                           {investment.status === 'pending' && (
-                            <Button
-                              size="sm"
-                              onClick={() => updateInvestmentStatus(investment.id, 'paid')}
-                              className="bg-cosmo-blue hover:bg-cosmo-purple text-white"
-                            >
-                              Отметить как оплаченное
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => setShowConfirmation(investment.id)}
+                                className="bg-cosmo-purple hover:bg-cosmo-blue text-white"
+                              >
+                                Загрузить подтверждение
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => updateInvestmentStatus(investment.id, 'paid')}
+                                className="bg-cosmo-blue hover:bg-cosmo-purple text-white"
+                              >
+                                Отметить как оплаченное
+                              </Button>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -238,6 +383,14 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
+      
+      {/* Модальное окно загрузки подтверждения */}
+      {showConfirmation && (
+        <PaymentConfirmation
+          investmentId={showConfirmation}
+          onClose={() => setShowConfirmation(null)}
+        />
+      )}
     </div>
   );
 };
