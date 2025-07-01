@@ -1,84 +1,107 @@
 
+import { Shield, Zap, Globe, Rocket } from 'lucide-react';
+
 const About = () => {
   return (
-    <section id="about" className="py-20 relative">
+    <section id="about" className="py-20">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-neon-gradient bg-clip-text text-transparent neon-text">
-            О проекте CosmoFund
-          </h2>
-          
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-cosmo-blue neon-text">IT-гигант мирового уровня</h3>
-              <p className="text-white/80 leading-relaxed">
-                CosmoFund — IT-гигант с офисами в США, Казахстане и командами разработчиков 
-                по всему миру (более 50 специалистов). У нас уникальный опыт: продвигали 
-                сотни крупнейших брендов и блокчейн проектов, создаем метавселенную, 
-                ИИ-агентов и теперь запускаем твой билет в будущее.
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-neon-gradient bg-clip-text text-transparent neon-text">
+              Инвестиции в будущее
+            </h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+              COSMO LIFE — это не просто проект, это целая экосистема инновационных решений, 
+              которая объединяет передовые технологии для создания нового мира возможностей.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center">
+              <div className="w-16 h-16 bg-cosmo-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Globe className="w-8 h-8 text-cosmo-blue" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Метавселенная</h3>
+              <p className="text-white/70 text-sm">
+                Виртуальные миры с безграничными возможностями для работы, развлечений и социального взаимодействия
               </p>
             </div>
-            
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border">
-              <h4 className="text-xl font-bold text-cosmo-purple mb-4 neon-text">Наш опыт:</h4>
-              <ul className="space-y-3 text-white/80">
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-cosmo-green rounded-full mr-3"></span>
-                  Более 100 проектов для клиентов
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-cosmo-blue rounded-full mr-3"></span>
-                  Более 30 собственных запусков
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-cosmo-purple rounded-full mr-3"></span>
-                  Многомиллионная прибыль для инвесторов
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-cosmo-green rounded-full mr-3"></span>
-                  Актуальный маркетинг и тренды
-                </li>
-              </ul>
+
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center">
+              <div className="w-16 h-16 bg-cosmo-purple/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Zap className="w-8 h-8 text-cosmo-purple" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">ИИ Технологии</h3>
+              <p className="text-white/70 text-sm">
+                Искусственный интеллект нового поколения для автоматизации и улучшения качества жизни
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center">
+              <div className="w-16 h-16 bg-cosmo-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-8 h-8 text-cosmo-green" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Блокчейн</h3>
+              <p className="text-white/70 text-sm">
+                Децентрализованные решения для максимальной безопасности и прозрачности всех операций
+              </p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center">
+              <div className="w-16 h-16 bg-cosmo-blue/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Rocket className="w-8 h-8 text-cosmo-blue" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Космос</h3>
+              <p className="text-white/70 text-sm">
+                Инновационные космические проекты и технологии для освоения новых горизонтов
+              </p>
             </div>
           </div>
-          
+
           <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-3xl p-8 neon-border">
-            <h3 className="text-3xl font-bold text-center mb-8 text-cosmo-blue neon-text">
-              Прогнозируемая доходность
-            </h3>
-            
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-cosmo-green neon-text mb-2">1.2 млрд ₽</div>
-                <div className="text-white/60">Суммарный доход с 0.01% рынка</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-cosmo-purple neon-text mb-2">357.6 млн ₽</div>
-                <div className="text-white/60">Общая прибыль после расходов</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-cosmo-blue neon-text mb-2">601.75 млрд ₽</div>
-                <div className="text-white/60">Потенциал при 5% рынка</div>
-              </div>
-            </div>
-            
-            <div className="grid md:grid-cols-5 gap-4">
-              {[
-                { service: 'Такси', market: '200 млрд $', commission: '10%', profit: '55 млн ₽' },
-                { service: 'Доставка еды', market: '300 млрд $', commission: '15%', profit: '112 млн ₽' },
-                { service: 'Маркетплейс', market: '500 млрд $', commission: '12%', profit: '149 млн ₽' },
-                { service: 'Поиск работы', market: '100 млрд $', commission: '10%', profit: '25 млн ₽' },
-                { service: 'Необанк', market: '1 трлн $', commission: '1%', profit: '16.6 млн ₽' }
-              ].map((item, index) => (
-                <div key={index} className="bg-white/5 rounded-xl p-4 text-center">
-                  <h4 className="font-bold text-cosmo-blue mb-2">{item.service}</h4>
-                  <div className="text-sm space-y-1 text-white/70">
-                    <div>Рынок: {item.market}</div>
-                    <div>Комиссия: {item.commission}</div>
-                    <div className="text-cosmo-green font-bold">Прибыль: {item.profit}</div>
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-3xl font-bold text-cosmo-blue mb-6 neon-text">
+                  Инвестиционная модель
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-3 h-3 bg-cosmo-green rounded-full"></div>
+                    <p className="text-white">
+                      <strong>Минимальная инвестиция:</strong> ₽50,000 = 0.01% доли
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-3 h-3 bg-cosmo-purple rounded-full"></div>
+                    <p className="text-white">
+                      <strong>Масштабируемость:</strong> Увеличивайте долю по мере роста проекта
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-3 h-3 bg-cosmo-blue rounded-full"></div>
+                    <p className="text-white">
+                      <strong>Прозрачность:</strong> Полная отчетность по всем операциям
+                    </p>
                   </div>
                 </div>
-              ))}
+              </div>
+              
+              <div className="bg-white/5 rounded-xl p-6">
+                <h4 className="text-xl font-bold text-white mb-4">Прогнозы доходности</h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-white/80">При оценке ₽357.6 млрд:</span>
+                    <span className="text-cosmo-green font-bold">35,760₽/год за 0.01%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/80">При захвате 5% рынка:</span>
+                    <span className="text-cosmo-purple font-bold">1.78M₽ за 0.01%</span>
+                  </div>
+                </div>
+                <p className="text-xs text-white/60 mt-4">
+                  * Прогнозы основаны на консервативных оценках рынка
+                </p>
+              </div>
             </div>
           </div>
         </div>

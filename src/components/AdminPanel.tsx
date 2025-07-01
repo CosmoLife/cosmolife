@@ -25,6 +25,10 @@ const AdminPanel = () => {
   const [offerText, setOfferText] = useState('');
   const [loading, setLoading] = useState(false);
   const [profiles, setProfiles] = useState<{[key: string]: any}>({});
+  const [paymentConfirmations, setPaymentConfirmations] = useState<{[key: string]: any}>({});
+  
+  // Состояния для отложенного сохранения
+  const [pendingChanges, setPendingChanges] = useState<{[key: string]: any}>({});
 
   useEffect(() => {
     loadData();
@@ -53,6 +57,29 @@ const AdminPanel = () => {
     }
   };
 
+  const loadPaymentConfirmations = async (investmentIds: string[]) => {
+    if (investmentIds.length === 0) return {};
+    
+    try {
+      const { data, error } = await supabase
+        .from('payment_confirmations')
+        .select('*')
+        .in('investment_id', investmentIds);
+      
+      if (error) throw error;
+      
+      const confirmationsMap: {[key: string]: any} = {};
+      (data || []).forEach(confirmation => {
+        confirmationsMap[confirmation.investment_id] = confirmation;
+      });
+      
+      return confirmationsMap;
+    } catch (error) {
+      console.error('Error loading payment confirmations:', error);
+      return {};
+    }
+  };
+
   const loadData = async () => {
     try {
       const [investmentsData, shareRequestsData, offer] = await Promise.all([
@@ -73,57 +100,58 @@ const AdminPanel = () => {
       const uniqueUserIds = [...new Set(allUserIds)];
       const profilesData = await loadProfiles(uniqueUserIds);
       setProfiles(profilesData);
+      
+      // Загружаем подтверждения оплаты
+      const investmentIds = investmentsData.map(inv => inv.id);
+      const confirmationsData = await loadPaymentConfirmations(investmentIds);
+      setPaymentConfirmations(confirmationsData);
     } catch (error) {
       console.error('Error loading admin data:', error);
     }
   };
 
-  const handleInvestmentStatusUpdate = async (id: string, status: string, adminNotes?: string) => {
-    try {
-      await updateInvestmentStatus(id, status as any, adminNotes);
-      await loadData();
-      toast({
-        title: "Статус обновлен",
-        description: "Статус инвестиции успешно изменен",
-      });
-    } catch (error) {
-      toast({
-        title: "Ошибка",
-        description: "Не удалось обновить статус",
-        variant: "destructive"
-      });
-    }
+  const handleStatusChange = (id: string, field: string, value: any) => {
+    setPendingChanges(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value
+      }
+    }));
   };
 
-  const handleIncomeUpdate = async (id: string, income: number) => {
-    try {
-      await updateInvestmentIncome(id, income);
-      await loadData();
-      toast({
-        title: "Доход обновлен",
-        description: "Полученный доход успешно обновлен",
-      });
-    } catch (error) {
-      toast({
-        title: "Ошибка",
-        description: "Не удалось обновить доход",
-        variant: "destructive"
-      });
-    }
-  };
+  const saveChanges = async (id: string, type: 'investment' | 'shareRequest') => {
+    const changes = pendingChanges[id];
+    if (!changes) return;
 
-  const handleShareRequestUpdate = async (id: string, status: string, adminNotes?: string) => {
     try {
-      await updateShareSaleRequestStatus(id, status as any, adminNotes);
+      if (type === 'investment') {
+        if (changes.status || changes.admin_notes !== undefined) {
+          await updateInvestmentStatus(id, changes.status || investments.find(inv => inv.id === id)?.status, changes.admin_notes);
+        }
+        if (changes.received_income !== undefined) {
+          await updateInvestmentIncome(id, changes.received_income);
+        }
+      } else {
+        await updateShareSaleRequestStatus(id, changes.status, changes.admin_notes);
+      }
+      
+      // Убираем изменения из состояния после сохранения
+      setPendingChanges(prev => {
+        const newChanges = { ...prev };
+        delete newChanges[id];
+        return newChanges;
+      });
+      
       await loadData();
       toast({
-        title: "Заявка обновлена",
-        description: "Статус заявки на продажу изменен",
+        title: "Изменения сохранены",
+        description: type === 'investment' ? "Статус инвестиции обновлен" : "Статус заявки обновлен",
       });
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось обновить заявку",
+        description: "Не удалось сохранить изменения",
         variant: "destructive"
       });
     }
@@ -163,8 +191,17 @@ const AdminPanel = () => {
         
         <TabsContent value="investments" className="space-y-4">
           <h3 className="text-xl font-bold text-white mb-4">Управление инвестициями</h3>
+          <div className="text-sm text-white/60 mb-4">
+            <p><strong>Статусы:</strong></p>
+            <p>• <strong>Оплачено</strong> - платеж подтвержден, но доля еще не активна</p>
+            <p>• <strong>Активно</strong> - доля активна и приносит доход инвестору</p>
+          </div>
           {investments.map((investment) => {
             const userProfile = profiles[investment.user_id];
+            const paymentConfirmation = paymentConfirmations[investment.id];
+            const changes = pendingChanges[investment.id] || {};
+            const hasChanges = Object.keys(changes).length > 0;
+            
             return (
               <div key={investment.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -175,14 +212,23 @@ const AdminPanel = () => {
                     <p className="text-white"><strong>Доля:</strong> {investment.percentage?.toFixed(4)}%</p>
                     <p className="text-white"><strong>Способ оплаты:</strong> {investment.payment_method}</p>
                     {investment.transaction_hash && (
-                      <p className="text-white"><strong>Хэш:</strong> {investment.transaction_hash}</p>
+                      <p className="text-white"><strong>Хэш транзакции:</strong> {investment.transaction_hash}</p>
+                    )}
+                    {paymentConfirmation && (
+                      <div className="mt-2">
+                        <p className="text-cosmo-green"><strong>Подтверждение оплаты:</strong> Загружено</p>
+                        <p className="text-white text-sm">{paymentConfirmation.file_name}</p>
+                        {paymentConfirmation.transaction_hash && (
+                          <p className="text-white text-sm"><strong>Хэш USDT:</strong> {paymentConfirmation.transaction_hash}</p>
+                        )}
+                      </div>
                     )}
                   </div>
                   <div className="space-y-2">
                     <Label className="text-white">Статус</Label>
                     <select 
-                      value={investment.status}
-                      onChange={(e) => handleInvestmentStatusUpdate(investment.id, e.target.value)}
+                      value={changes.status || investment.status}
+                      onChange={(e) => handleStatusChange(investment.id, 'status', e.target.value)}
                       className="w-full bg-slate-700 border border-slate-600 text-white rounded p-2 focus:border-cosmo-blue focus:outline-none"
                     >
                       <option value="pending">Ожидает</option>
@@ -196,17 +242,26 @@ const AdminPanel = () => {
                     <Input
                       type="number"
                       step="0.01"
-                      value={investment.received_income || 0}
-                      onChange={(e) => handleIncomeUpdate(investment.id, Number(e.target.value))}
+                      value={changes.received_income !== undefined ? changes.received_income : (investment.received_income || 0)}
+                      onChange={(e) => handleStatusChange(investment.id, 'received_income', Number(e.target.value))}
                       className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
                       placeholder="0"
                     />
+                    
+                    {hasChanges && (
+                      <Button
+                        onClick={() => saveChanges(investment.id, 'investment')}
+                        className="w-full bg-cosmo-green hover:bg-cosmo-blue text-white mt-2"
+                      >
+                        Сохранить изменения
+                      </Button>
+                    )}
                   </div>
                 </div>
                 <Textarea
                   placeholder="Заметки администратора"
-                  value={investment.admin_notes || ''}
-                  onChange={(e) => handleInvestmentStatusUpdate(investment.id, investment.status, e.target.value)}
+                  value={changes.admin_notes !== undefined ? changes.admin_notes : (investment.admin_notes || '')}
+                  onChange={(e) => handleStatusChange(investment.id, 'admin_notes', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
                 />
               </div>
@@ -218,6 +273,9 @@ const AdminPanel = () => {
           <h3 className="text-xl font-bold text-white mb-4">Заявки на продажу долей</h3>
           {shareRequests.map((request) => {
             const userProfile = profiles[request.user_id];
+            const changes = pendingChanges[request.id] || {};
+            const hasChanges = Object.keys(changes).length > 0;
+            
             return (
               <div key={request.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -231,20 +289,29 @@ const AdminPanel = () => {
                   <div className="space-y-2">
                     <Label className="text-white">Статус</Label>
                     <select 
-                      value={request.status}
-                      onChange={(e) => handleShareRequestUpdate(request.id, e.target.value)}
+                      value={changes.status || request.status}
+                      onChange={(e) => handleStatusChange(request.id, 'status', e.target.value)}
                       className="w-full bg-slate-700 border border-slate-600 text-white rounded p-2 focus:border-cosmo-blue focus:outline-none"
                     >
                       <option value="pending">Ожидает</option>
                       <option value="approved">Одобрено</option>
                       <option value="rejected">Отклонено</option>
                     </select>
+                    
+                    {hasChanges && (
+                      <Button
+                        onClick={() => saveChanges(request.id, 'shareRequest')}
+                        className="w-full bg-cosmo-green hover:bg-cosmo-blue text-white mt-2"
+                      >
+                        Сохранить изменения
+                      </Button>
+                    )}
                   </div>
                 </div>
                 <Textarea
                   placeholder="Заметки администратора"
-                  value={request.admin_notes || ''}
-                  onChange={(e) => handleShareRequestUpdate(request.id, request.status, e.target.value)}
+                  value={changes.admin_notes !== undefined ? changes.admin_notes : (request.admin_notes || '')}
+                  onChange={(e) => handleStatusChange(request.id, 'admin_notes', e.target.value)}
                   className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
                 />
               </div>
