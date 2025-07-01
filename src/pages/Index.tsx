@@ -1,106 +1,54 @@
 
-import Header from '@/components/Header';
-import Hero from '@/components/Hero';
-import About from '@/components/About';
-import PublicOffer from '@/components/PublicOffer';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import About from "@/components/About";
+import Cases from "@/pages/Cases";
+import PublicOffer from "@/components/PublicOffer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-space-dark">
       <Header />
       <Hero />
       <About />
-      
-      {/* CTA Section */}
-      <section className="py-20 relative">
-        <div className="container mx-auto px-6 text-center">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 bg-neon-gradient bg-clip-text text-transparent neon-text">
-              Начни инвестировать уже сегодня
-            </h2>
-            <p className="text-xl text-white/80 mb-12">
-              Присоединяйся к революции в мире технологий и получай стабильный доход от инвестиций в будущее
-            </p>
-            
-            <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-              <Link to="/register">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-cosmo-blue to-cosmo-purple hover:from-cosmo-purple hover:to-cosmo-green text-white font-bold py-6 px-12 text-xl neon-border animate-neon-pulse"
-                >
-                  Инвестировать от 50,000 ₽
-                </Button>
-              </Link>
-              
-              <Link to="/cases">
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="border-cosmo-green text-cosmo-green hover:bg-cosmo-green hover:text-white py-6 px-12 text-xl"
-                >
-                  Смотреть кейсы
-                </Button>
-              </Link>
-              
-              <a 
-                href="https://t.me/cosmofund" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="border-cosmo-blue text-cosmo-blue hover:bg-cosmo-blue hover:text-white py-6 px-12 text-xl"
-                >
-                  Задать вопрос в Telegram
-                </Button>
-              </a>
-
-              <a 
-                href="https://wa.me/77777777777" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="border-cosmo-purple text-cosmo-purple hover:bg-cosmo-purple hover:text-white py-6 px-12 text-xl"
-                >
-                  Задать вопрос в WhatsApp
-                </Button>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Cases />
+      <PublicOffer />
       
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-            <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <img 
-                src="/lovable-uploads/c078ebf8-4837-4c3a-a7fb-8ab50ca3e76c.png" 
-                alt="Cosmo Life" 
-                className="h-8 w-8"
-              />
-              <span className="text-xl font-bold text-white">COSMO LIFE</span>
+      <footer id="contacts" className="py-20 border-t border-white/10">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 bg-neon-gradient bg-clip-text text-transparent neon-text">
+              Контакты
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              <div className="text-white/80">
+                <h3 className="text-xl font-bold text-cosmo-blue mb-4">CosmoLab и CosmoFund</h3>
+                <p className="mb-2">IT-гигант и фонд с офисами в Америке, Азии, Европе, СНГ</p>
+                <p>и командами разработчиков по всему миру (более 150 специалистов)</p>
+              </div>
+              
+              <div className="text-white/80">
+                <h3 className="text-xl font-bold text-cosmo-purple mb-4">Социальные сети</h3>
+                <div className="space-y-2">
+                  <a href="https://t.me/cosmofund" className="block hover:text-cosmo-blue transition-colors">
+                    Telegram: @cosmofund
+                  </a>
+                  <a href="https://wa.me/77777777777" className="block hover:text-cosmo-green transition-colors">
+                    WhatsApp: +7 777 777 77 77
+                  </a>
+                </div>
+              </div>
             </div>
-            <div className="text-white/60 text-sm">
-              © 2025 Cosmo Life. Все права защищены.
-            </div>
-          </div>
-          
-          {/* Legal Links */}
-          <div className="border-t border-white/10 pt-4">
-            <div className="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-6">
-              <PublicOffer />
-              <span className="text-white/40 hidden md:inline">•</span>
-              <span className="text-white/60 text-sm">
-                Инвестиции связаны с высоким риском. Не предназначено для резидентов США.
-              </span>
+            
+            <div className="text-sm text-white/60 border-t border-white/10 pt-8">
+              <p className="mb-2">
+                Инвестиции всегда связаны с риском. Не инвестируйте последние или заемные средства.
+              </p>
+              <p>
+                Оферта не предназначена для резидентов США.
+              </p>
             </div>
           </div>
         </div>

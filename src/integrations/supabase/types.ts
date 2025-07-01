@@ -9,28 +9,79 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      investments: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          id: string
+          payment_method: string | null
+          percentage: number
+          received_income: number | null
+          status: string | null
+          transaction_hash: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          payment_method?: string | null
+          percentage: number
+          received_income?: number | null
+          status?: string | null
+          transaction_hash?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_method?: string | null
+          percentage?: number
+          received_income?: number | null
+          status?: string | null
+          transaction_hash?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_confirmations: {
         Row: {
+          admin_notes: string | null
           file_name: string
           file_url: string
           id: string
           investment_id: string
+          status: string | null
+          transaction_hash: string | null
           uploaded_at: string
           user_id: string
         }
         Insert: {
+          admin_notes?: string | null
           file_name: string
           file_url: string
           id?: string
           investment_id: string
+          status?: string | null
+          transaction_hash?: string | null
           uploaded_at?: string
           user_id: string
         }
         Update: {
+          admin_notes?: string | null
           file_name?: string
           file_url?: string
           id?: string
           investment_id?: string
+          status?: string | null
+          transaction_hash?: string | null
           uploaded_at?: string
           user_id?: string
         }
@@ -45,8 +96,10 @@ export type Database = {
           full_name: string | null
           id: string
           phone: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
           telegram_username: string | null
           updated_at: string
+          usdt_wallet: string | null
           whatsapp_number: string | null
         }
         Insert: {
@@ -57,8 +110,10 @@ export type Database = {
           full_name?: string | null
           id: string
           phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           telegram_username?: string | null
           updated_at?: string
+          usdt_wallet?: string | null
           whatsapp_number?: string | null
         }
         Update: {
@@ -69,9 +124,65 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           telegram_username?: string | null
           updated_at?: string
+          usdt_wallet?: string | null
           whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      settings: {
+        Row: {
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: string | null
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: string | null
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
+      share_sale_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          id: string
+          share_percentage: number
+          status: string | null
+          updated_at: string
+          usdt_wallet: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          share_percentage: number
+          status?: string | null
+          updated_at?: string
+          usdt_wallet: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          share_percentage?: number
+          status?: string | null
+          updated_at?: string
+          usdt_wallet?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -83,7 +194,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "user" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -198,6 +309,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["user", "admin"],
+    },
   },
 } as const

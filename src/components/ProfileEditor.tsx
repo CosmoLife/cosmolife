@@ -16,7 +16,8 @@ const ProfileEditor = () => {
     address: profile?.address || '',
     birth_date: profile?.birth_date || '',
     telegram_username: profile?.telegram_username || '',
-    whatsapp_number: profile?.whatsapp_number || ''
+    whatsapp_number: profile?.whatsapp_number || '',
+    usdt_wallet: profile?.usdt_wallet || ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -81,6 +82,10 @@ const ProfileEditor = () => {
           <div>
             <Label className="text-white/80">WhatsApp</Label>
             <div className="text-white">{profile?.whatsapp_number || 'Не указан'}</div>
+          </div>
+          <div className="md:col-span-2">
+            <Label className="text-white/80">Кошелек USDT BEP-20</Label>
+            <div className="text-white">{profile?.usdt_wallet || 'Не указан'}</div>
           </div>
         </div>
       </div>
@@ -169,6 +174,19 @@ const ProfileEditor = () => {
               onChange={(e) => handleChange('whatsapp_number', e.target.value)}
               className="bg-white/5 border-white/20 text-white"
               placeholder="+7 (999) 123-45-67"
+            />
+          </div>
+          
+          <div className="md:col-span-2">
+            <Label htmlFor="usdt_wallet" className="text-white mb-2 block">
+              Кошелек USDT BEP-20
+            </Label>
+            <Input
+              id="usdt_wallet"
+              value={formData.usdt_wallet}
+              onChange={(e) => handleChange('usdt_wallet', e.target.value)}
+              className="bg-white/5 border-white/20 text-white"
+              placeholder="0x..."
             />
           </div>
         </div>
