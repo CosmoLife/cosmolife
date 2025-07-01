@@ -1,173 +1,122 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabaseClient';
 
-type Investment = {
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { User, Session } from '@supabase/supabase-js';
+
+interface UserProfile {
+  id: string;
+  full_name?: string;
+  phone?: string;
+  address?: string;
+  birth_date?: string;
+  avatar_url?: string;
+  telegram_username?: string;
+  whatsapp_number?: string;
+  usdt_wallet?: string;
+  role?: 'user' | 'admin';
+}
+
+interface Investment {
   id: string;
   user_id: string;
   amount: number;
   percentage: number;
-  created_at: string;
-  status: 'pending' | 'active' | 'rejected' | 'under_review' | 'paid';
+  status: 'pending' | 'under_review' | 'paid' | 'active' | 'rejected';
   payment_method?: 'yoomoney' | 'usdt' | 'card';
-  confirmation_url?: string | null;
-  admin_notes?: string | null;
-  received_income?: number | null;
-  transaction_hash?: string | null;
-};
-
-type UserProfile = {
-  id: string;
-  full_name: string;
-  phone: string;
-  address: string;
-  birth_date: string;
-  telegram_username: string;
-  whatsapp_number: string;
-  usdt_wallet: string;
+  transaction_hash?: string;
+  admin_notes?: string;
+  received_income?: number;
+  created_at: string;
   updated_at: string;
-};
+}
 
-type SiteText = {
-  offer: string;
-};
+interface ShareSaleRequest {
+  id: string;
+  user_id: string;
+  share_percentage: number;
+  usdt_wallet: string;
+  status: 'pending' | 'approved' | 'rejected';
+  admin_notes?: string;
+  created_at: string;
+}
 
-type AuthContextType = {
+interface AuthContextType {
   user: User | null;
   session: Session | null;
-  investments: Investment[];
   profile: UserProfile | null;
-  loading: boolean;
+  investments: Investment[];
+  shareSaleRequests: ShareSaleRequest[];
   isAdmin: boolean;
-  siteText: SiteText;
-  signUp: (email: string, password: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signOut: () => Promise<{ error: any }>;
-  addInvestment: (amount: number, paymentMethod: 'yoomoney' | 'usdt' | 'card') => Promise<{ error: any }>;
-  updateInvestmentStatus: (investmentId: string, status: Investment['status'], adminNotes?: string, receivedIncome?: number) => Promise<{ error: any }>;
-  getAllInvestments: () => Promise<{ data: any[], error: any }>;
-  updateProfile: (profileData: Partial<UserProfile>) => Promise<{ error: any }>;
-  uploadPaymentConfirmation: (investmentId: string, file: File, transactionHash?: string) => Promise<{ error: any }>;
-  updateSiteText: (key: string, content: string) => Promise<{ error: any }>;
-};
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, fullName: string) => Promise<void>;
+  logout: () => void;
+  addInvestment: (amount: number, paymentMethod: Investment['payment_method']) => Promise<void>;
+  updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
+  uploadPaymentConfirmation: (investmentId: string, file: File, transactionHash?: string) => Promise<void>;
+  createShareSaleRequest: (sharePercentage: number, usdtWallet: string) => Promise<void>;
+  // Admin functions
+  getAllInvestments: () => Promise<Investment[]>;
+  updateInvestmentStatus: (id: string, status: Investment['status'], adminNotes?: string) => Promise<void>;
+  updateInvestmentIncome: (id: string, receivedIncome: number) => Promise<void>;
+  getAllShareSaleRequests: () => Promise<ShareSaleRequest[]>;
+  updateShareSaleRequestStatus: (id: string, status: ShareSaleRequest['status'], adminNotes?: string) => Promise<void>;
+  updateOfferText: (text: string) => Promise<void>;
+  getOfferText: () => Promise<string>;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [investments, setInvestments] = useState<Investment[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [siteText, setSiteText] = useState({
-    offer: 'Текст публичной оферты будет загружен...'
-  });
+  const [investments, setInvestments] = useState<Investment[]>([]);
+  const [shareSaleRequests, setShareSaleRequests] = useState<ShareSaleRequest[]>([]);
 
-  // Initialize auth state
+  const isAdmin = profile?.role === 'admin';
+
   useEffect(() => {
-    let mounted = true;
-
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (!mounted) return;
-        
-        console.log('Auth state changed:', event, session?.user?.email);
-        
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Defer loading additional data to prevent blocking
           setTimeout(() => {
-            if (mounted) {
-              loadUserData(session.user.id);
-            }
+            loadUserProfile(session.user.id);
+            loadUserInvestments(session.user.id);
+            loadUserShareSaleRequests(session.user.id);
           }, 0);
         } else {
-          setInvestments([]);
           setProfile(null);
-          setIsAdmin(false);
+          setInvestments([]);
+          setShareSaleRequests([]);
         }
-        
-        setLoading(false);
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error('Error getting session:', error);
-      }
-      if (mounted && session) {
-        setSession(session);
-        setUser(session.user);
-        loadUserData(session.user.id);
-      }
-      if (mounted) {
-        setLoading(false);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        loadUserProfile(session.user.id);
+        loadUserInvestments(session.user.id);
+        loadUserShareSaleRequests(session.user.id);
       }
     });
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Load site text
-  useEffect(() => {
-    loadSiteText();
-  }, []);
-
-  const loadUserData = async (userId: string) => {
-    try {
-      await Promise.all([
-        loadInvestments(userId),
-        loadProfile(userId),
-        checkAdminStatus(userId)
-      ]);
-    } catch (error) {
-      console.error('Error loading user data:', error);
-    }
-  };
-
-  const loadInvestments = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('investments')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const typedData = data?.map(item => ({
-        ...item,
-        status: item.status as Investment['status'],
-        payment_method: item.payment_method as 'yoomoney' | 'usdt' | 'card',
-        admin_notes: item.admin_notes || '',
-        received_income: item.received_income || 0,
-        transaction_hash: item.transaction_hash || '',
-        percentage: item.amount * 0.01 / 50000 // Исправлен расчет: 0.01% за 50,000₽
-      })) || [];
-
-      setInvestments(typedData);
-    } catch (error) {
-      console.error('Error loading investments:', error);
-    }
-  };
-
-  const loadProfile = async (userId: string) => {
+  const loadUserProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -175,249 +124,322 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .eq('id', userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
-      setProfile(data || null);
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error loading profile:', error);
+        return;
+      }
+
+      setProfile(data);
     } catch (error) {
       console.error('Error loading profile:', error);
     }
   };
 
-  const checkAdminStatus = async (userId: string) => {
+  const loadUserInvestments = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('admin_users')
-        .select('id')
-        .eq('id', userId)
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      setIsAdmin(!!data);
-    } catch (error) {
-      console.error('Error checking admin status:', error);
-    }
-  };
-
-  const loadSiteText = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('site_content')
+        .from('investments')
         .select('*')
-        .eq('key', 'offer')
-        .single();
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-      if (error && error.code !== 'PGRST116') throw error;
-      if (data) {
-        setSiteText(prev => ({ ...prev, offer: data.content }));
+      if (error) {
+        console.error('Error loading investments:', error);
+        return;
       }
+
+      // Cast the status and payment_method fields to match our interface
+      const typedInvestments = (data || []).map(investment => ({
+        ...investment,
+        status: investment.status as Investment['status'],
+        payment_method: investment.payment_method as Investment['payment_method']
+      }));
+
+      setInvestments(typedInvestments);
     } catch (error) {
-      console.error('Error loading site text:', error);
+      console.error('Error loading investments:', error);
     }
   };
 
-  const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/dashboard`;
+  const loadUserShareSaleRequests = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('share_sale_requests')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading share sale requests:', error);
+        return;
+      }
+
+      // Cast the status field to match our interface
+      const typedRequests = (data || []).map(request => ({
+        ...request,
+        status: request.status as ShareSaleRequest['status']
+      }));
+
+      setShareSaleRequests(typedRequests);
+    } catch (error) {
+      console.error('Error loading share sale requests:', error);
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (error) throw error;
+  };
+
+  const register = async (email: string, password: string, fullName: string) => {
+    const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName
+        }
       }
     });
-    return { error };
+    
+    if (error) throw error;
   };
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
-  };
-
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setUser(null);
-      setSession(null);
-      setInvestments([]);
-      setProfile(null);
-      setIsAdmin(false);
-    }
-    return { error };
-  };
-
-  const addInvestment = async (amount: number, paymentMethod: 'yoomoney' | 'usdt' | 'card') => {
-    if (!user) return;
-
-    const percentage = amount * 0.01 / 50000; // Исправлен расчет: 0.01% за 50,000₽
-
-    const { error } = await supabase
-      .from('investments')
-      .insert([
-        {
-          user_id: user.id,
-          amount,
-          percentage,
-          payment_method: paymentMethod,
-          status: 'pending'
-        }
-      ]);
-
-    if (!error) {
-      await loadInvestments(user.id);
-    }
-
-    return { error };
-  };
-
-  const updateInvestmentStatus = async (investmentId: string, status: Investment['status'], adminNotes?: string, receivedIncome?: number) => {
-    if (!isAdmin) return { error: new Error('Unauthorized') };
-
-    const updateData: any = { status };
-    if (adminNotes !== undefined) updateData.admin_notes = adminNotes;
-    if (receivedIncome !== undefined) updateData.received_income = receivedIncome;
-
-    const { error } = await supabase
-      .from('investments')
-      .update(updateData)
-      .eq('id', investmentId);
-
-    if (!error && user) {
-      await loadInvestments(user.id);
-    }
-
-    return { error };
-  };
-
-  const getAllInvestments = async () => {
-    if (!isAdmin) return { data: [], error: new Error('Unauthorized') };
-
-    const { data, error } = await supabase
-      .from('investments')
-      .select(`
-        *,
-        profiles:user_id (
-          full_name,
-          email
-        )
-      `)
-      .order('created_at', { ascending: false });
-
-    return { 
-      data: data?.map(item => ({
-        ...item,
-        status: item.status as Investment['status'],
-        payment_method: item.payment_method as 'yoomoney' | 'usdt' | 'card',
-        admin_notes: item.admin_notes || '',
-        received_income: item.received_income || 0,
-        transaction_hash: item.transaction_hash || '',
-        percentage: item.amount * 0.01 / 50000 // Исправлен расчет
-      })) || [], 
-      error 
-    };
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+    setInvestments([]);
+    setShareSaleRequests([]);
   };
 
   const updateProfile = async (profileData: Partial<UserProfile>) => {
     if (!user) return;
 
-    const { error } = await supabase
-      .from('profiles')
-      .upsert([
-        {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
           id: user.id,
           ...profileData,
           updated_at: new Date().toISOString()
-        }
-      ]);
+        });
 
-    if (!error) {
-      await loadProfile(user.id);
+      if (error) throw error;
+
+      setProfile(prev => prev ? { ...prev, ...profileData } : null);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
     }
+  };
 
-    return { error };
+  const addInvestment = async (amount: number, paymentMethod: Investment['payment_method']) => {
+    if (!user) return;
+    
+    // Исправленный расчет: 50,000 = 0.01% (50,000 / 5,000,000 = 0.01)
+    const percentage = (amount / 5000000) * 100;
+    
+    const { error } = await supabase
+      .from('investments')
+      .insert({
+        user_id: user.id,
+        amount,
+        percentage,
+        status: 'pending',
+        payment_method: paymentMethod
+      });
+
+    if (error) throw error;
+
+    await loadUserInvestments(user.id);
   };
 
   const uploadPaymentConfirmation = async (investmentId: string, file: File, transactionHash?: string) => {
-    if (!user) return { error: new Error('User not authenticated') };
+    if (!user) return;
 
     try {
-      // Upload file to storage
       const fileExt = file.name.split('.').pop();
-      const fileName = `${investmentId}-${Date.now()}.${fileExt}`;
-      const filePath = `payment-confirmations/${fileName}`;
-
+      const fileName = `${user.id}/${investmentId}.${fileExt}`;
+      
       const { error: uploadError } = await supabase.storage
-        .from('confirmations')
-        .upload(filePath, file);
+        .from('payment-confirmations')
+        .upload(fileName, file);
 
       if (uploadError) throw uploadError;
 
-      // Update investment with confirmation URL and hash
-      const updateData: any = {
-        confirmation_url: filePath,
-        status: 'under_review'
-      };
-      
-      if (transactionHash) {
-        updateData.transaction_hash = transactionHash;
-      }
+      const { error: dbError } = await supabase
+        .from('payment_confirmations')
+        .insert({
+          user_id: user.id,
+          investment_id: investmentId,
+          file_url: fileName,
+          file_name: file.name,
+          transaction_hash: transactionHash,
+          status: 'pending'
+        });
 
-      const { error: updateError } = await supabase
+      if (dbError) throw dbError;
+
+      // Обновляем статус инвестиции на "на проверке"
+      await supabase
         .from('investments')
-        .update(updateData)
+        .update({ status: 'under_review' })
         .eq('id', investmentId);
 
-      if (updateError) throw updateError;
-
-      await loadInvestments(user.id);
-      return { error: null };
+      await loadUserInvestments(user.id);
     } catch (error) {
-      return { error };
+      console.error('Error uploading file:', error);
+      throw error;
     }
   };
 
-  const updateSiteText = async (key: string, content: string) => {
-    if (!isAdmin) return { error: new Error('Unauthorized') };
+  const createShareSaleRequest = async (sharePercentage: number, usdtWallet: string) => {
+    if (!user) return;
 
     const { error } = await supabase
-      .from('site_content')
-      .upsert([
-        {
-          key,
-          content,
-          updated_at: new Date().toISOString()
-        }
-      ]);
+      .from('share_sale_requests')
+      .insert({
+        user_id: user.id,
+        share_percentage: sharePercentage,
+        usdt_wallet: usdtWallet,
+        status: 'pending'
+      });
 
-    if (!error) {
-      setSiteText(prev => ({ ...prev, [key]: content }));
-    }
+    if (error) throw error;
 
-    return { error };
+    await loadUserShareSaleRequests(user.id);
   };
 
-  const value = {
-    user,
-    session,
-    investments,
-    profile,
-    loading,
-    isAdmin,
-    siteText,
-    signUp,
-    signIn,
-    signOut,
-    addInvestment,
-    updateInvestmentStatus,
-    getAllInvestments,
-    updateProfile,
-    uploadPaymentConfirmation,
-    updateSiteText
+  // Admin functions
+  const getAllInvestments = async (): Promise<Investment[]> => {
+    const { data, error } = await supabase
+      .from('investments')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    
+    // Cast the status and payment_method fields to match our interface
+    return (data || []).map(investment => ({
+      ...investment,
+      status: investment.status as Investment['status'],
+      payment_method: investment.payment_method as Investment['payment_method']
+    }));
+  };
+
+  const updateInvestmentStatus = async (id: string, status: Investment['status'], adminNotes?: string) => {
+    const { error } = await supabase
+      .from('investments')
+      .update({ 
+        status, 
+        admin_notes: adminNotes,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (error) throw error;
+  };
+
+  const updateInvestmentIncome = async (id: string, receivedIncome: number) => {
+    const { error } = await supabase
+      .from('investments')
+      .update({ 
+        received_income: receivedIncome,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (error) throw error;
+  };
+
+  const getAllShareSaleRequests = async (): Promise<ShareSaleRequest[]> => {
+    const { data, error } = await supabase
+      .from('share_sale_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    
+    // Cast the status field to match our interface
+    return (data || []).map(request => ({
+      ...request,
+      status: request.status as ShareSaleRequest['status']
+    }));
+  };
+
+  const updateShareSaleRequestStatus = async (id: string, status: ShareSaleRequest['status'], adminNotes?: string) => {
+    const { error } = await supabase
+      .from('share_sale_requests')
+      .update({ 
+        status, 
+        admin_notes: adminNotes,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (error) throw error;
+  };
+
+  const updateOfferText = async (text: string) => {
+    const { error } = await supabase
+      .from('settings')
+      .upsert({ 
+        key: 'offer_text', 
+        value: text,
+        updated_at: new Date().toISOString(),
+        updated_by: user?.id
+      });
+
+    if (error) throw error;
+  };
+
+  const getOfferText = async (): Promise<string> => {
+    const { data, error } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'offer_text')
+      .single();
+
+    if (error) {
+      console.error('Error loading offer text:', error);
+      return 'Текст публичной оферты...';
+    }
+
+    return data?.value || 'Текст публичной оферты...';
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      user,
+      session,
+      profile,
+      investments,
+      shareSaleRequests,
+      isAdmin,
+      login,
+      register,
+      logout,
+      addInvestment,
+      updateProfile,
+      uploadPaymentConfirmation,
+      createShareSaleRequest,
+      getAllInvestments,
+      updateInvestmentStatus,
+      updateInvestmentIncome,
+      getAllShareSaleRequests,
+      updateShareSaleRequestStatus,
+      updateOfferText,
+      getOfferText
+    }}>
       {children}
     </AuthContext.Provider>
   );

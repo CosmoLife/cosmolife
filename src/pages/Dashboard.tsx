@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -212,7 +211,7 @@ const Dashboard = () => {
                         className="bg-white/5 border-white/20 text-white"
                       />
                       <p className="text-sm text-white/60 mt-1">
-                        Доля: {(investmentAmount * 0.01 / 50000).toFixed(4)}%
+                        Доля: {((investmentAmount / 5000000) * 100).toFixed(4)}%
                       </p>
                     </div>
                     
