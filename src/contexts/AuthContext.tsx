@@ -245,7 +245,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addInvestment = async (amount: number, paymentMethod: Investment['payment_method']) => {
     if (!user) return;
     
-    // Исправленный расчет: 50,000 = 0.01%
+    // Исправленный расчет: 50,000 = 0.01% (50,000 / 5,000,000 = 0.01)
     const percentage = (amount / 5000000) * 100;
     
     const { error } = await supabase
