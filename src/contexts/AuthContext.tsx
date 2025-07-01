@@ -148,10 +148,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      // Cast the status field to match our interface
+      // Cast the status and payment_method fields to match our interface
       const typedInvestments = (data || []).map(investment => ({
         ...investment,
-        status: investment.status as Investment['status']
+        status: investment.status as Investment['status'],
+        payment_method: investment.payment_method as Investment['payment_method']
       }));
 
       setInvestments(typedInvestments);
@@ -327,10 +328,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (error) throw error;
     
-    // Cast the status field to match our interface
+    // Cast the status and payment_method fields to match our interface
     return (data || []).map(investment => ({
       ...investment,
-      status: investment.status as Investment['status']
+      status: investment.status as Investment['status'],
+      payment_method: investment.payment_method as Investment['payment_method']
     }));
   };
 
