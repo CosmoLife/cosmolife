@@ -148,7 +148,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      setInvestments(data || []);
+      // Cast the status field to match our interface
+      const typedInvestments = (data || []).map(investment => ({
+        ...investment,
+        status: investment.status as Investment['status']
+      }));
+
+      setInvestments(typedInvestments);
     } catch (error) {
       console.error('Error loading investments:', error);
     }
@@ -167,7 +173,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      setShareSaleRequests(data || []);
+      // Cast the status field to match our interface
+      const typedRequests = (data || []).map(request => ({
+        ...request,
+        status: request.status as ShareSaleRequest['status']
+      }));
+
+      setShareSaleRequests(typedRequests);
     } catch (error) {
       console.error('Error loading share sale requests:', error);
     }
@@ -310,14 +322,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const getAllInvestments = async (): Promise<Investment[]> => {
     const { data, error } = await supabase
       .from('investments')
-      .select(`
-        *,
-        profiles!investments_user_id_fkey(full_name, phone)
-      `)
+      .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    
+    // Cast the status field to match our interface
+    return (data || []).map(investment => ({
+      ...investment,
+      status: investment.status as Investment['status']
+    }));
   };
 
   const updateInvestmentStatus = async (id: string, status: Investment['status'], adminNotes?: string) => {
@@ -348,14 +362,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const getAllShareSaleRequests = async (): Promise<ShareSaleRequest[]> => {
     const { data, error } = await supabase
       .from('share_sale_requests')
-      .select(`
-        *,
-        profiles!share_sale_requests_user_id_fkey(full_name, phone)
-      `)
+      .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    
+    // Cast the status field to match our interface
+    return (data || []).map(request => ({
+      ...request,
+      status: request.status as ShareSaleRequest['status']
+    }));
   };
 
   const updateShareSaleRequestStatus = async (id: string, status: ShareSaleRequest['status'], adminNotes?: string) => {
