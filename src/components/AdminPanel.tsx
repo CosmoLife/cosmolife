@@ -36,6 +36,7 @@ const AdminPanel = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
+    console.log('AdminPanel mounted, loading data...');
     loadData();
   }, []);
 
@@ -416,6 +417,8 @@ const AdminPanel = () => {
             const userProfile = profiles[investment.user_id];
             const paymentConfirmation = paymentConfirmations[investment.id];
             const changes = pendingChanges[investment.id] || {};
+            
+            console.log(`Investment ${investment.id}: user_id=${investment.user_id}, profile=`, userProfile, 'all profiles=', Object.keys(profiles));
             
             return (
               <div key={investment.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
