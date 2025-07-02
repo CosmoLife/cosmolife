@@ -134,17 +134,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loadUserProfile = async (userId: string) => {
     try {
+      console.log('Loading profile for userId:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
+      console.log('Profile query result:', { data, error });
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error loading profile:', error);
         return;
       }
 
+      console.log('Setting profile:', data);
       setProfile(data);
     } catch (error) {
       console.error('Error loading profile:', error);
