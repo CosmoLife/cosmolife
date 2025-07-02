@@ -260,12 +260,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     console.log('Updating profile for user:', user.id, 'with data:', profileData);
 
+    // Очищаем пустые строки для полей дат
+    const cleanedData = { ...profileData };
+    if (cleanedData.birth_date === '') {
+      cleanedData.birth_date = null;
+    }
+    
+    // Очищаем другие пустые строки
+    Object.keys(cleanedData).forEach(key => {
+      if (cleanedData[key as keyof UserProfile] === '') {
+        cleanedData[key as keyof UserProfile] = null;
+      }
+    });
+
+    console.log('Cleaned data:', cleanedData);
+
     try {
       // Сначала пробуем обновить существующий профиль
       const { data: updateData, error: updateError } = await supabase
         .from('profiles')
         .update({
-          ...profileData,
+          ...cleanedData,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id)
@@ -282,7 +297,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .from('profiles')
             .insert({
               id: user.id,
-              ...profileData,
+              ...cleanedData,
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString()
             })
