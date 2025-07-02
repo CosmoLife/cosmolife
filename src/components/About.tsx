@@ -5,17 +5,17 @@ const About = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-neon-gradient bg-clip-text text-transparent neon-text">
-            О проекте CosmoFund
+            О проекте
           </h2>
           
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-cosmo-blue neon-text">IT-гигант мирового уровня</h3>
               <p className="text-white/80 leading-relaxed">
-                CosmoFund — IT-гигант с офисами в США, Казахстане и командами разработчиков 
-                по всему миру (более 50 специалистов). У нас уникальный опыт: продвигали 
-                сотни крупнейших брендов и блокчейн проектов, создаем метавселенную, 
-                ИИ-агентов и теперь запускаем твой билет в будущее.
+                IT-гигант и фонд с офисами в Америке, Азии, Европе, СНГ 
+                и командами разработчиков по всему миру (более 50 специалистов). 
+                У нас уникальный опыт: продвигали сотни крупнейших брендов и блокчейн проектов, 
+                создаем метавселенную, ИИ-агентов и теперь запускаем твой билет в будущее.
               </p>
             </div>
             

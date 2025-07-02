@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -30,9 +31,11 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  const totalInvestment = investments.reduce((sum, inv) => sum + inv.amount, 0);
-  const totalPercentage = investments.reduce((sum, inv) => sum + inv.percentage, 0);
-  const totalReceivedIncome = investments.reduce((sum, inv) => sum + (inv.received_income || 0), 0);
+  // Считаем только оплаченные инвестиции (статус 'paid' или 'active')
+  const paidInvestments = investments.filter(inv => inv.status === 'paid' || inv.status === 'active');
+  const totalInvestment = paidInvestments.reduce((sum, inv) => sum + inv.amount, 0);
+  const totalPercentage = paidInvestments.reduce((sum, inv) => sum + inv.percentage, 0);
+  const totalReceivedIncome = paidInvestments.reduce((sum, inv) => sum + (inv.received_income || 0), 0);
   const yearlyReturn = totalPercentage * 357600000 / 100;
   const potentialReturn = totalPercentage * 178800000000 / 100;
 
@@ -211,7 +214,7 @@ const Dashboard = () => {
                         className="bg-white/5 border-white/20 text-white"
                       />
                       <p className="text-sm text-white/60 mt-1">
-                        Доля: {((investmentAmount / 5000000) * 100).toFixed(4)}%
+                        Доля: {(investmentAmount * 0.01 / 50000).toFixed(4)}%
                       </p>
                     </div>
                     
@@ -267,7 +270,7 @@ const Dashboard = () => {
                         </div>
                         <div className="grid md:grid-cols-2 gap-2">
                           <a 
-                            href="https://t.me/cosmofund" 
+                            href="https://t.me/CosmoLifeАpp" 
                             target="_blank" 
                             rel="noopener noreferrer"
                           >
@@ -276,7 +279,7 @@ const Dashboard = () => {
                             </Button>
                           </a>
                           <a 
-                            href="https://wa.me/77777777777" 
+                            href="https://wa.me/79123456789" 
                             target="_blank" 
                             rel="noopener noreferrer"
                           >
