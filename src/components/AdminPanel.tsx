@@ -40,11 +40,27 @@ const AdminPanel = () => {
   const [shareRequestsPage, setShareRequestsPage] = useState(1);
   const [usersPage, setUsersPage] = useState(1);
   const [investorsPage, setInvestorsPage] = useState(1);
+  const [activeTab, setActiveTab] = useState('pending');
   const itemsPerPage = 5;
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'settings') {
+      loadOfferText();
+    }
+  }, [activeTab]);
+
+  const loadOfferText = async () => {
+    try {
+      const offer = await getOfferText();
+      setOfferText(offer);
+    } catch (error) {
+      console.error('Error loading offer text:', error);
+    }
+  };
 
   const loadProfiles = async (userIds: string[]) => {
     if (userIds.length === 0) return {};
@@ -377,7 +393,7 @@ const AdminPanel = () => {
         Панель администратора
       </h2>
       
-      <Tabs defaultValue="pending" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="pending">Требуют подтверждения</TabsTrigger>
           <TabsTrigger value="share-requests">Заявки на продажу</TabsTrigger>
