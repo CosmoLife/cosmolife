@@ -40,12 +40,23 @@ interface ShareSaleRequest {
   created_at: string;
 }
 
+interface IncomeTransaction {
+  id: string;
+  user_id: string;
+  amount: number;
+  transaction_hash?: string;
+  admin_notes?: string;
+  created_at: string;
+  created_by?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: UserProfile | null;
   investments: Investment[];
   shareSaleRequests: ShareSaleRequest[];
+  incomeTransactions: IncomeTransaction[];
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, fullName: string) => Promise<void>;
@@ -54,6 +65,7 @@ interface AuthContextType {
   updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
   uploadPaymentConfirmation: (investmentId: string, file: File, transactionHash?: string) => Promise<void>;
   createShareSaleRequest: (sharePercentage: number, usdtWallet: string) => Promise<void>;
+  getIncomeTransactions: () => Promise<IncomeTransaction[]>;
   // Admin functions
   getAllInvestments: () => Promise<Investment[]>;
   updateInvestmentStatus: (id: string, status: Investment['status'], adminNotes?: string) => Promise<void>;
@@ -80,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [shareSaleRequests, setShareSaleRequests] = useState<ShareSaleRequest[]>([]);
+  const [incomeTransactions, setIncomeTransactions] = useState<IncomeTransaction[]>([]);
 
   const isAdmin = profile?.role === 'admin';
 
@@ -94,11 +107,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             loadUserProfile(session.user.id);
             loadUserInvestments(session.user.id);
             loadUserShareSaleRequests(session.user.id);
+            loadUserIncomeTransactions(session.user.id);
           }, 0);
         } else {
           setProfile(null);
           setInvestments([]);
           setShareSaleRequests([]);
+          setIncomeTransactions([]);
         }
       }
     );
@@ -110,6 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loadUserProfile(session.user.id);
         loadUserInvestments(session.user.id);
         loadUserShareSaleRequests(session.user.id);
+        loadUserIncomeTransactions(session.user.id);
       }
     });
 
@@ -219,6 +235,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfile(null);
     setInvestments([]);
     setShareSaleRequests([]);
+    setIncomeTransactions([]);
   };
 
   const updateProfile = async (profileData: Partial<UserProfile>) => {
@@ -319,6 +336,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await loadUserShareSaleRequests(user.id);
   };
 
+  const loadUserIncomeTransactions = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('income_transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading income transactions:', error);
+        return;
+      }
+
+      setIncomeTransactions(data || []);
+    } catch (error) {
+      console.error('Error loading income transactions:', error);
+    }
+  };
+
+  const getIncomeTransactions = async (): Promise<IncomeTransaction[]> => {
+    if (!user) return [];
+    
+    const { data, error } = await supabase
+      .from('income_transactions')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error getting income transactions:', error);
+      return [];
+    }
+
+    return data || [];
+  };
+
   // Admin functions
   const getAllInvestments = async (): Promise<Investment[]> => {
     const { data, error } = await supabase
@@ -417,13 +470,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return data?.value || 'Текст публичной оферты...';
   };
 
-  return (
+    return (
     <AuthContext.Provider value={{
       user,
       session,
       profile,
       investments,
       shareSaleRequests,
+      incomeTransactions,
       isAdmin,
       login,
       register,
@@ -432,6 +486,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateProfile,
       uploadPaymentConfirmation,
       createShareSaleRequest,
+      getIncomeTransactions,
       getAllInvestments,
       updateInvestmentStatus,
       updateInvestmentIncome,

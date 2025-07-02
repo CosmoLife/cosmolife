@@ -11,15 +11,17 @@ import ProfileEditor from '@/components/ProfileEditor';
 import PaymentConfirmation from '@/components/PaymentConfirmation';
 import ShareSaleModal from '@/components/ShareSaleModal';
 import AdminPanel from '@/components/AdminPanel';
+import IncomeTransactionsModal from '@/components/IncomeTransactionsModal';
 import { Copy, Info } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, investments, addInvestment, isAdmin } = useAuth();
+  const { user, investments, addInvestment, isAdmin, incomeTransactions, getIncomeTransactions } = useAuth();
   const [investmentAmount, setInvestmentAmount] = useState(50000);
   const [showPayment, setShowPayment] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState<{id: string, method?: string} | null>(null);
   const [showShareSale, setShowShareSale] = useState(false);
   const [showCommissionInfo, setShowCommissionInfo] = useState(false);
+  const [showIncomeTransactions, setShowIncomeTransactions] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -146,11 +148,15 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center">
+              <div 
+                className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center cursor-pointer hover:bg-white/20 transition-colors"
+                onClick={() => setShowIncomeTransactions(true)}
+              >
                 <h3 className="text-cosmo-green font-bold mb-2 neon-text">Полученный доход</h3>
                 <div className="text-2xl font-bold text-white">
                   {totalReceivedIncome.toLocaleString()} ₽
                 </div>
+                <div className="text-xs text-white/60 mt-1">Нажмите для подробностей</div>
               </div>
             </div>
 
@@ -420,6 +426,16 @@ const Dashboard = () => {
         <ShareSaleModal
           totalPercentage={totalPercentage}
           onClose={() => setShowShareSale(false)}
+        />
+      )}
+
+      {showIncomeTransactions && (
+        <IncomeTransactionsModal
+          isOpen={showIncomeTransactions}
+          onClose={() => setShowIncomeTransactions(false)}
+          transactions={incomeTransactions}
+          totalInvestment={totalInvestment}
+          totalPercentage={totalPercentage}
         />
       )}
     </div>
