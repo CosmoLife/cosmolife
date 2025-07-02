@@ -40,23 +40,12 @@ interface ShareSaleRequest {
   created_at: string;
 }
 
-interface IncomeTransaction {
-  id: string;
-  user_id: string;
-  amount: number;
-  transaction_hash?: string;
-  admin_notes?: string;
-  created_at: string;
-  created_by?: string;
-}
-
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: UserProfile | null;
   investments: Investment[];
   shareSaleRequests: ShareSaleRequest[];
-  incomeTransactions: IncomeTransaction[];
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, fullName: string) => Promise<void>;
@@ -65,12 +54,10 @@ interface AuthContextType {
   updateProfile: (profileData: Partial<UserProfile>) => Promise<void>;
   uploadPaymentConfirmation: (investmentId: string, file: File, transactionHash?: string) => Promise<void>;
   createShareSaleRequest: (sharePercentage: number, usdtWallet: string) => Promise<void>;
-  loadUserIncomeTransactions: (userId: string) => Promise<void>;
   // Admin functions
   getAllInvestments: () => Promise<Investment[]>;
   updateInvestmentStatus: (id: string, status: Investment['status'], adminNotes?: string) => Promise<void>;
   updateInvestmentIncome: (id: string, receivedIncome: number) => Promise<void>;
-  addIncomeTransaction: (userId: string, amount: number, transactionHash?: string, adminNotes?: string) => Promise<void>;
   getAllShareSaleRequests: () => Promise<ShareSaleRequest[]>;
   updateShareSaleRequestStatus: (id: string, status: ShareSaleRequest['status'], adminNotes?: string) => Promise<void>;
   updateOfferText: (text: string) => Promise<void>;
@@ -93,7 +80,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [shareSaleRequests, setShareSaleRequests] = useState<ShareSaleRequest[]>([]);
-  const [incomeTransactions, setIncomeTransactions] = useState<IncomeTransaction[]>([]);
 
   const isAdmin = profile?.role === 'admin';
 
@@ -108,13 +94,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             loadUserProfile(session.user.id);
             loadUserInvestments(session.user.id);
             loadUserShareSaleRequests(session.user.id);
-            loadUserIncomeTransactions(session.user.id);
           }, 0);
         } else {
           setProfile(null);
           setInvestments([]);
           setShareSaleRequests([]);
-          setIncomeTransactions([]);
         }
       }
     );
@@ -126,7 +110,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loadUserProfile(session.user.id);
         loadUserInvestments(session.user.id);
         loadUserShareSaleRequests(session.user.id);
-        loadUserIncomeTransactions(session.user.id);
       }
     });
 
@@ -165,6 +148,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
+      // Cast the status and payment_method fields to match our interface
       const typedInvestments = (data || []).map(investment => ({
         ...investment,
         status: investment.status as Investment['status'],
@@ -190,6 +174,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
+      // Cast the status field to match our interface
       const typedRequests = (data || []).map(request => ({
         ...request,
         status: request.status as ShareSaleRequest['status']
@@ -198,25 +183,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setShareSaleRequests(typedRequests);
     } catch (error) {
       console.error('Error loading share sale requests:', error);
-    }
-  };
-
-  const loadUserIncomeTransactions = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('income_transactions')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error loading income transactions:', error);
-        return;
-      }
-
-      setIncomeTransactions(data || []);
-    } catch (error) {
-      console.error('Error loading income transactions:', error);
     }
   };
 
@@ -230,26 +196,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const register = async (email: string, password: string, fullName: string) => {
-    // Проверяем, не существует ли уже пользователь с таким email
-    const { data: existingUser } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', (await supabase.auth.getUser()).data.user?.id)
-      .single();
-
-    // Получаем список всех пользователей по email через auth API для проверки
-    try {
-      const { data: users } = await supabase.auth.admin.listUsers();
-      const emailExists = users?.users?.some(u => u.email === email);
-      
-      if (emailExists) {
-        throw new Error('Пользователь с таким email уже зарегистрирован');
-      }
-    } catch (adminError) {
-      // Если нет доступа к admin API, продолжаем обычную регистрацию
-      console.log('Cannot check existing users via admin API, proceeding with registration');
-    }
-
     const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signUp({
@@ -273,7 +219,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfile(null);
     setInvestments([]);
     setShareSaleRequests([]);
-    setIncomeTransactions([]);
   };
 
   const updateProfile = async (profileData: Partial<UserProfile>) => {
@@ -300,6 +245,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addInvestment = async (amount: number, paymentMethod: Investment['payment_method']) => {
     if (!user) return;
     
+    // Исправленный расчет: 50,000 = 0.01% (50,000 / 5,000,000 = 0.01)
     const percentage = (amount / 5000000) * 100;
     
     const { error } = await supabase
@@ -343,6 +289,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (dbError) throw dbError;
 
+      // Обновляем статус инвестиции на "на проверке"
       await supabase
         .from('investments')
         .update({ status: 'under_review' })
@@ -376,14 +323,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const getAllInvestments = async (): Promise<Investment[]> => {
     const { data, error } = await supabase
       .from('investments')
-      .select(`
-        *,
-        profiles!investments_user_id_fkey(full_name)
-      `)
+      .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
     
+    // Cast the status and payment_method fields to match our interface
     return (data || []).map(investment => ({
       ...investment,
       status: investment.status as Investment['status'],
@@ -416,22 +361,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error) throw error;
   };
 
-  const addIncomeTransaction = async (userId: string, amount: number, transactionHash?: string, adminNotes?: string) => {
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('income_transactions')
-      .insert({
-        user_id: userId,
-        amount,
-        transaction_hash: transactionHash,
-        admin_notes: adminNotes,
-        created_by: user.id
-      });
-
-    if (error) throw error;
-  };
-
   const getAllShareSaleRequests = async (): Promise<ShareSaleRequest[]> => {
     const { data, error } = await supabase
       .from('share_sale_requests')
@@ -440,6 +369,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (error) throw error;
     
+    // Cast the status field to match our interface
     return (data || []).map(request => ({
       ...request,
       status: request.status as ShareSaleRequest['status']
@@ -494,7 +424,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       profile,
       investments,
       shareSaleRequests,
-      incomeTransactions,
       isAdmin,
       login,
       register,
@@ -503,11 +432,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateProfile,
       uploadPaymentConfirmation,
       createShareSaleRequest,
-      loadUserIncomeTransactions,
       getAllInvestments,
       updateInvestmentStatus,
       updateInvestmentIncome,
-      addIncomeTransaction,
       getAllShareSaleRequests,
       updateShareSaleRequestStatus,
       updateOfferText,

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +15,6 @@ const AdminPanel = () => {
     getAllInvestments, 
     updateInvestmentStatus, 
     updateInvestmentIncome,
-    addIncomeTransaction,
     getAllShareSaleRequests,
     updateShareSaleRequestStatus,
     updateOfferText,
@@ -109,6 +109,7 @@ const AdminPanel = () => {
       
       if (investmentsError) throw investmentsError;
       
+      // Группируем инвестиции по пользователям и суммируем их
       const investorMap = new Map();
       (investmentsData || []).forEach(inv => {
         const existing = investorMap.get(inv.user_id);
@@ -135,11 +136,12 @@ const AdminPanel = () => {
       
       if (profilesError) throw profilesError;
       
+      // Объединяем данные профилей с инвестиционными данными
       return (profilesData || []).map(profile => ({
         ...profile,
         totalInvestment: investorMap.get(profile.id)?.totalAmount || 0,
         totalIncome: investorMap.get(profile.id)?.totalIncome || 0,
-        sharePercentage: (((investorMap.get(profile.id)?.totalAmount || 0) / 50000) * 0.01).toFixed(4)
+        sharePercentage: ((investorMap.get(profile.id)?.totalAmount || 0) * 0.01 / 50000).toFixed(4)
       }));
     } catch (error) {
       console.error('Error loading investors:', error);
@@ -232,16 +234,35 @@ const AdminPanel = () => {
 
   const handleInvestorIncomeUpdate = async (userId: string) => {
     const changes = investorIncomeChanges[userId];
-    if (!changes || !changes.income || !changes.hash) return;
+    if (!changes) return;
     
     try {
-      // Добавляем транзакцию дохода
-      await addIncomeTransaction(
-        userId, 
-        changes.income, 
-        changes.hash, 
-        `Начисление дохода администратором`
-      );
+      // Обновляем доход для всех активных инвестиций этого пользователя
+      const { data: userInvestments, error } = await supabase
+        .from('investments')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('status', 'active');
+      
+      if (error) throw error;
+      
+      // Распределяем доход пропорционально между всеми инвестициями пользователя
+      if (userInvestments && userInvestments.length > 0) {
+        const incomePerInvestment = changes.income / userInvestments.length;
+        
+        for (const investment of userInvestments) {
+          await updateInvestmentIncome(investment.id, incomePerInvestment);
+        }
+      }
+      
+      // Сохраняем хэш перевода в профиле пользователя (можно добавить отдельную таблицу для истории переводов)
+      await supabase
+        .from('profiles')
+        .update({ 
+          last_transfer_hash: changes.hash,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId);
       
       // Удаляем изменения из состояния
       setInvestorIncomeChanges(prev => {
@@ -268,8 +289,6 @@ const AdminPanel = () => {
     setInvestorIncomeChanges(prev => ({
       ...prev,
       [userId]: {
-        income: 0,
-        hash: '',
         ...prev[userId],
         [field]: value
       }
@@ -324,7 +343,7 @@ const AdminPanel = () => {
     }
   };
 
-  // Фильтруем инвестиции, требующие подтверждения
+  // Фильтруем инвестиции, требующие подтверждения (НЕ ТОЛЬКО pending и under_review)
   const pendingInvestments = investments.filter(inv => 
     inv.status === 'pending' || inv.status === 'under_review' || inv.status === 'paid'
   );
@@ -387,8 +406,9 @@ const AdminPanel = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || 'Не указано'}</p>
+                    <p className="text-white"><strong>Email:</strong> {userProfile?.email || 'Не указано'}</p>
                     <p className="text-white"><strong>Сумма:</strong> {investment.amount?.toLocaleString()} ₽</p>
-                    <p className="text-white"><strong>Доля:</strong> {((investment.amount / 50000) * 0.01).toFixed(4)}%</p>
+                    <p className="text-white"><strong>Доля:</strong> {(investment.amount * 0.01 / 50000).toFixed(4)}%</p>
                     <p className="text-white"><strong>Способ оплаты:</strong> {investment.payment_method}</p>
                     {investment.transaction_hash && (
                       <p className="text-white"><strong>Хэш транзакции:</strong> {investment.transaction_hash}</p>
@@ -408,11 +428,6 @@ const AdminPanel = () => {
                           <Eye className="w-4 h-4 mr-2" />
                           Посмотреть файл
                         </Button>
-                        {paymentConfirmation.transaction_hash && (
-                          <p className="text-white text-sm mt-1">
-                            <strong>Хэш:</strong> {paymentConfirmation.transaction_hash}
-                          </p>
-                        )}
                       </div>
                     )}
                   </div>
@@ -496,7 +511,7 @@ const AdminPanel = () => {
             );
           })}
         </TabsContent>
-        
+
         <TabsContent value="users" className="space-y-4">
           <h3 className="text-xl font-bold text-white mb-4">Зарегистрированные пользователи ({allUsers.length})</h3>
           <p className="text-white/60 mb-4">Пользователи, которые зарегистрировались, но еще не стали активными инвесторами</p>

@@ -11,16 +11,14 @@ import ProfileEditor from '@/components/ProfileEditor';
 import PaymentConfirmation from '@/components/PaymentConfirmation';
 import ShareSaleModal from '@/components/ShareSaleModal';
 import AdminPanel from '@/components/AdminPanel';
-import IncomeTransactionsModal from '@/components/IncomeTransactionsModal';
-import { Copy, Info, Eye } from 'lucide-react';
+import { Copy, Info } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, investments, incomeTransactions, addInvestment, isAdmin, loadUserIncomeTransactions } = useAuth();
+  const { user, investments, addInvestment, isAdmin } = useAuth();
   const [investmentAmount, setInvestmentAmount] = useState(50000);
   const [showPayment, setShowPayment] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState<{id: string, method?: string} | null>(null);
   const [showShareSale, setShowShareSale] = useState(false);
-  const [showIncomeTransactions, setShowIncomeTransactions] = useState(false);
   const [showCommissionInfo, setShowCommissionInfo] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -28,10 +26,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) {
       navigate('/login');
-    } else {
-      loadUserIncomeTransactions(user.id);
     }
-  }, [user, navigate, loadUserIncomeTransactions]);
+  }, [user, navigate]);
 
   if (!user) return null;
 
@@ -39,8 +35,8 @@ const Dashboard = () => {
   const paidInvestments = investments.filter(inv => inv.status === 'paid' || inv.status === 'active');
   const totalInvestment = paidInvestments.reduce((sum, inv) => sum + inv.amount, 0);
   // ИСПРАВЛЕННАЯ ФОРМУЛА: каждые 50,000 рублей = 0.01%
-  const totalPercentage = (totalInvestment / 50000) * 0.01;
-  const totalReceivedIncome = incomeTransactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+  const totalPercentage = totalInvestment * 0.01 / 50000;
+  const totalReceivedIncome = paidInvestments.reduce((sum, inv) => sum + (inv.received_income || 0), 0);
   const yearlyReturn = totalPercentage * 357600000 / 100;
   const potentialReturn = totalPercentage * 178800000000 / 100;
 
@@ -155,15 +151,6 @@ const Dashboard = () => {
                 <div className="text-2xl font-bold text-white">
                   {totalReceivedIncome.toLocaleString()} ₽
                 </div>
-                <Button
-                  onClick={() => setShowIncomeTransactions(true)}
-                  variant="ghost"
-                  size="sm"
-                  className="mt-2 text-cosmo-blue hover:text-white hover:bg-cosmo-blue/20"
-                >
-                  <Eye className="w-4 h-4 mr-1" />
-                  Подробнее
-                </Button>
               </div>
             </div>
 
@@ -228,7 +215,7 @@ const Dashboard = () => {
                         className="bg-white/5 border-white/20 text-white"
                       />
                       <p className="text-sm text-white/60 mt-1">
-                        Доля: {((investmentAmount / 50000) * 0.01).toFixed(4)}%
+                        Доля: {(investmentAmount * 0.01 / 50000).toFixed(4)}%
                       </p>
                     </div>
                     
@@ -346,7 +333,7 @@ const Dashboard = () => {
                             {investment.amount.toLocaleString()} ₽
                           </div>
                           <div className="text-sm text-white/60">
-                            Доля: {((investment.amount / 50000) * 0.01).toFixed(4)}% • {' '}
+                            Доля: {(investment.amount * 0.01 / 50000).toFixed(4)}% • {' '}
                             {new Date(investment.created_at).toLocaleDateString('ru-RU')}
                           </div>
                           {investment.payment_method && (
@@ -433,14 +420,6 @@ const Dashboard = () => {
         <ShareSaleModal
           totalPercentage={totalPercentage}
           onClose={() => setShowShareSale(false)}
-        />
-      )}
-
-      {showIncomeTransactions && (
-        <IncomeTransactionsModal
-          transactions={incomeTransactions}
-          totalInvestment={totalInvestment}
-          onClose={() => setShowIncomeTransactions(false)}
         />
       )}
     </div>
