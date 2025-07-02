@@ -421,24 +421,29 @@ const AdminPanel = () => {
                     <p className="text-white"><strong>Сумма:</strong> {investment.amount?.toLocaleString()} ₽</p>
                     <p className="text-white"><strong>Доля:</strong> {(investment.amount * 0.01 / 50000).toFixed(4)}%</p>
                     <p className="text-white"><strong>Способ оплаты:</strong> {investment.payment_method}</p>
-                    {investment.transaction_hash && (
-                      <p className="text-white"><strong>Хэш транзакции:</strong> {investment.transaction_hash}</p>
+                    {(investment.transaction_hash || paymentConfirmation?.transaction_hash) && (
+                      <p className="text-white"><strong>Хэш транзакции:</strong> {investment.transaction_hash || paymentConfirmation?.transaction_hash}</p>
                     )}
                     {paymentConfirmation && (
                       <div className="mt-2">
                         <p className="text-white"><strong>Подтверждение оплаты:</strong></p>
-                        <Button
-                          onClick={async () => {
-                            const url = await getImageUrl(paymentConfirmation.file_url);
-                            if (url) setSelectedImage(url);
-                          }}
-                          variant="outline"
-                          size="sm"
-                          className="mt-1 border-cosmo-blue text-cosmo-blue hover:bg-cosmo-blue hover:text-white"
-                        >
-                          <Eye className="w-4 h-4 mr-2" />
-                          Посмотреть файл
-                        </Button>
+                        <div className="flex gap-2 mt-1">
+                          <Button
+                            onClick={async () => {
+                              const url = await getImageUrl(paymentConfirmation.file_url);
+                              if (url) setSelectedImage(url);
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="border-cosmo-blue text-cosmo-blue hover:bg-cosmo-blue hover:text-white"
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            Посмотреть файл
+                          </Button>
+                          <span className="text-sm text-white/60 self-center">
+                            {paymentConfirmation.file_name}
+                          </span>
+                        </div>
                       </div>
                     )}
                   </div>

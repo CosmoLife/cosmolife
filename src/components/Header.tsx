@@ -4,7 +4,17 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
-  const { user, logout } = useAuth();
+  let user = null;
+  let logout = () => {};
+  
+  try {
+    const authData = useAuth();
+    user = authData.user;
+    logout = authData.logout;
+  } catch (error) {
+    // useAuth not available on this page, that's ok
+  }
+  
   const navigate = useNavigate();
 
   const handleLogout = () => {
