@@ -14,7 +14,7 @@ import PaymentConfirmation from '@/components/PaymentConfirmation';
 import ShareSaleModal from '@/components/ShareSaleModal';
 import AdminPanel from '@/components/AdminPanel';
 import IncomeTransactionsModal from '@/components/IncomeTransactionsModal';
-import { Copy, Info } from 'lucide-react';
+import { Copy, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
@@ -26,6 +26,8 @@ const Dashboard = () => {
   const [showShareSale, setShowShareSale] = useState(false);
   const [showCommissionInfo, setShowCommissionInfo] = useState(false);
   const [showIncomeTransactions, setShowIncomeTransactions] = useState(false);
+  const [investmentHistoryPage, setInvestmentHistoryPage] = useState(1);
+  const [shareHistoryPage, setShareHistoryPage] = useState(1);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -53,6 +55,19 @@ const Dashboard = () => {
   const totalReceivedIncome = incomeTransactions.reduce((sum, t) => sum + t.amount, 0);
   const yearlyReturn = totalPercentage * 357600000 / 100;
   const potentialReturn = totalPercentage * 178800000000 / 100;
+
+  // Пагинация для историй
+  const itemsPerPage = 5;
+  
+  // Пагинация для истории инвестиций
+  const totalInvestmentPages = Math.ceil(investments.length / itemsPerPage);
+  const startInvestmentIndex = (investmentHistoryPage - 1) * itemsPerPage;
+  const paginatedInvestments = investments.slice(startInvestmentIndex, startInvestmentIndex + itemsPerPage);
+  
+  // Пагинация для истории заявок на продажу
+  const totalSharePages = Math.ceil(shareSaleRequests.length / itemsPerPage);
+  const startShareIndex = (shareHistoryPage - 1) * itemsPerPage;
+  const paginatedShareRequests = shareSaleRequests.slice(startShareIndex, startShareIndex + itemsPerPage);
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -182,89 +197,6 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Блок продажи доли */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border mb-12">
-              <div className="flex items-center justify-center gap-4">
-                <Button
-                  onClick={handleShareSale}
-                  className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-3 px-6"
-                >
-                  Продать мою долю
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onMouseEnter={() => setShowCommissionInfo(true)}
-                  onMouseLeave={() => setShowCommissionInfo(false)}
-                  className="text-white/60 hover:text-white relative"
-                >
-                  <Info className="w-4 h-4" />
-                  {showCommissionInfo && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg shadow-lg whitespace-nowrap z-10">
-                      Внимание: При продаже доли через платформу мы берем комиссию 20% от суммы сделки.
-                    </div>
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            {/* История заявок на продажу доли */}
-            {shareSaleRequests.length > 0 && (
-              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border mb-12">
-                <h2 className="text-3xl font-bold text-red-400 mb-6 neon-text">
-                  Заявки на продажу доли
-                </h2>
-                
-                <div className="space-y-4">
-                  {shareSaleRequests.map((request) => (
-                    <div
-                      key={request.id}
-                      className="bg-white/5 rounded-xl p-6 border border-white/10"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                          <div className="text-lg font-bold text-white mb-1">
-                            Продажа {request.share_percentage.toFixed(4)}% доли
-                          </div>
-                          <div className="text-sm text-white/60 mb-2">
-                            Кошелек USDT: {request.usdt_wallet}
-                          </div>
-                          <div className="text-sm text-white/60">
-                            Дата подачи: {new Date(request.created_at).toLocaleDateString('ru-RU')}
-                          </div>
-                          {request.admin_notes && (
-                            <div className="text-sm text-white/80 mt-2 bg-white/5 p-2 rounded">
-                              <strong>Комментарий администратора:</strong> {request.admin_notes}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <div className={`px-4 py-2 rounded-full text-sm font-bold ${
-                            request.status === 'pending' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50' :
-                            request.status === 'approved' ? 'bg-green-500/20 text-green-300 border border-green-500/50' :
-                            'bg-red-500/20 text-red-300 border border-red-500/50'
-                          }`}>
-                            {request.status === 'pending' ? 'Ожидает рассмотрения' :
-                             request.status === 'approved' ? 'Одобрено' : 'Отклонено'}
-                          </div>
-                          {request.status === 'approved' && (
-                            <div className="text-xs text-green-300 text-center">
-                              Доля будет продана автоматически
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-6 text-sm text-white/60 bg-white/5 p-4 rounded-lg">
-                  <strong>Информация:</strong> При одобрении заявки ваша доля будет автоматически продана следующему инвестору. 
-                  Средства поступят на указанный USDT кошелек за вычетом комиссии 20%.
-                </div>
-              </div>
-            )}
-            
             {/* Блок покупки доли (инвестирования) */}
             <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-3xl p-8 neon-border mb-12">
               <h2 className="text-3xl font-bold text-cosmo-blue mb-6 neon-text">
@@ -396,10 +328,37 @@ const Dashboard = () => {
             </div>
             
             {/* История инвестиций */}
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border">
-              <h2 className="text-3xl font-bold text-cosmo-purple mb-6 neon-text">
-                История инвестиций
-              </h2>
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border mb-12">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold text-cosmo-purple neon-text">
+                  История инвестиций
+                </h2>
+                {investments.length > itemsPerPage && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => setInvestmentHistoryPage(prev => Math.max(prev - 1, 1))}
+                      disabled={investmentHistoryPage === 1}
+                      variant="outline"
+                      size="sm"
+                      className="border-white/20 text-white"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <span className="text-white text-sm">
+                      {investmentHistoryPage} из {totalInvestmentPages}
+                    </span>
+                    <Button
+                      onClick={() => setInvestmentHistoryPage(prev => Math.min(prev + 1, totalInvestmentPages))}
+                      disabled={investmentHistoryPage === totalInvestmentPages}
+                      variant="outline"
+                      size="sm"
+                      className="border-white/20 text-white"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
               
               {investments.length === 0 ? (
                 <p className="text-white/80 text-center py-8">
@@ -407,7 +366,7 @@ const Dashboard = () => {
                 </p>
               ) : (
                 <div className="space-y-4">
-                  {investments.map((investment) => (
+                  {paginatedInvestments.map((investment) => (
                     <div
                       key={investment.id}
                       className="bg-white/5 rounded-xl p-6 border border-white/10"
@@ -488,6 +447,116 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
+
+            {/* Блок продажи доли */}
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border mb-12">
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  onClick={handleShareSale}
+                  className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-3 px-6"
+                >
+                  Продать мою долю
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onMouseEnter={() => setShowCommissionInfo(true)}
+                  onMouseLeave={() => setShowCommissionInfo(false)}
+                  className="text-white/60 hover:text-white relative"
+                >
+                  <Info className="w-4 h-4" />
+                  {showCommissionInfo && (
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg shadow-lg whitespace-nowrap z-10">
+                      Внимание: При продаже доли через платформу мы берем комиссию 20% от суммы сделки.
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* История заявок на продажу доли */}
+            {shareSaleRequests.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-3xl font-bold text-red-400 neon-text">
+                    Заявки на продажу доли
+                  </h2>
+                  {shareSaleRequests.length > itemsPerPage && (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        onClick={() => setShareHistoryPage(prev => Math.max(prev - 1, 1))}
+                        disabled={shareHistoryPage === 1}
+                        variant="outline"
+                        size="sm"
+                        className="border-white/20 text-white"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <span className="text-white text-sm">
+                        {shareHistoryPage} из {totalSharePages}
+                      </span>
+                      <Button
+                        onClick={() => setShareHistoryPage(prev => Math.min(prev + 1, totalSharePages))}
+                        disabled={shareHistoryPage === totalSharePages}
+                        variant="outline"
+                        size="sm"
+                        className="border-white/20 text-white"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="space-y-4">
+                  {paginatedShareRequests.map((request) => (
+                    <div
+                      key={request.id}
+                      className="bg-white/5 rounded-xl p-6 border border-white/10"
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                          <div className="text-lg font-bold text-white mb-1">
+                            Продажа {request.share_percentage.toFixed(4)}% доли
+                          </div>
+                          <div className="text-sm text-white/60 mb-2">
+                            Кошелек USDT: {request.usdt_wallet}
+                          </div>
+                          <div className="text-sm text-white/60">
+                            Дата подачи: {new Date(request.created_at).toLocaleDateString('ru-RU')}
+                          </div>
+                          {request.admin_notes && (
+                            <div className="text-sm text-white/80 mt-2 bg-white/5 p-2 rounded">
+                              <strong>Комментарий администратора:</strong> {request.admin_notes}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <div className={`px-4 py-2 rounded-full text-sm font-bold ${
+                            request.status === 'pending' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/50' :
+                            request.status === 'approved' ? 'bg-green-500/20 text-green-300 border border-green-500/50' :
+                            'bg-red-500/20 text-red-300 border border-red-500/50'
+                          }`}>
+                            {request.status === 'pending' ? 'Ожидает рассмотрения' :
+                             request.status === 'approved' ? 'Одобрено' : 'Отклонено'}
+                          </div>
+                          {request.status === 'approved' && (
+                            <div className="text-xs text-green-300 text-center">
+                              Доля будет продана автоматически
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-6 text-sm text-white/60 bg-white/5 p-4 rounded-lg">
+                  <strong>Информация:</strong> При одобрении заявки ваша доля будет автоматически продана следующему инвестору. 
+                  Средства поступят на указанный USDT кошелек за вычетом комиссии 20%.
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

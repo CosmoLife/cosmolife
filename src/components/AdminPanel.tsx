@@ -37,6 +37,7 @@ const AdminPanel = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [pendingChanges, setPendingChanges] = useState<{[key: string]: any}>({});
   const [investorIncomeChanges, setInvestorIncomeChanges] = useState<{[key: string]: {income: number, hash: string}}>({});
+  const [shareRequestsPage, setShareRequestsPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -495,41 +496,73 @@ const AdminPanel = () => {
         </TabsContent>
         
         <TabsContent value="share-requests" className="space-y-4">
-          <h3 className="text-xl font-bold text-white mb-4">Заявки на продажу долей</h3>
-          {shareRequests.map((request) => {
-            const userProfile = profiles[request.user_id];
-            return (
-              <div key={request.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || 'Не указано'}</p>
-                    <p className="text-white"><strong>Email:</strong> {userProfile?.email || 'Не указано'}</p>
-                    <p className="text-white"><strong>Доля для продажи:</strong> {request.share_percentage?.toFixed(4)}%</p>
-                    <p className="text-white"><strong>USDT кошелек:</strong> {request.usdt_wallet}</p>
-                    <p className="text-white"><strong>Дата:</strong> {new Date(request.created_at).toLocaleDateString('ru-RU')}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white">Статус</Label>
-                    <select 
-                      value={request.status}
-                      onChange={(e) => handleShareRequestUpdate(request.id, e.target.value)}
-                      className="w-full bg-slate-700 border border-slate-600 text-white rounded p-2 focus:border-cosmo-blue focus:outline-none"
-                    >
-                      <option value="pending">Ожидает</option>
-                      <option value="approved">Одобрено</option>
-                      <option value="rejected">Отклонено</option>
-                    </select>
-                  </div>
-                </div>
-                <Textarea
-                  placeholder="Заметки администратора"
-                  value={request.admin_notes || ''}
-                  onChange={(e) => handleShareRequestUpdate(request.id, request.status, e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
-                />
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-white">Заявки на продажу долей ({shareRequests.length})</h3>
+            {shareRequests.length > itemsPerPage && (
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => setShareRequestsPage(prev => Math.max(prev - 1, 1))}
+                  disabled={shareRequestsPage === 1}
+                  variant="outline"
+                  size="sm"
+                  className="border-white/20 text-white"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <span className="text-white text-sm">
+                  {shareRequestsPage} из {Math.ceil(shareRequests.length / itemsPerPage)}
+                </span>
+                <Button
+                  onClick={() => setShareRequestsPage(prev => Math.min(prev + 1, Math.ceil(shareRequests.length / itemsPerPage)))}
+                  disabled={shareRequestsPage === Math.ceil(shareRequests.length / itemsPerPage)}
+                  variant="outline"
+                  size="sm"
+                  className="border-white/20 text-white"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
-            );
-          })}
+            )}
+          </div>
+          {(() => {
+            const shareRequestsPerPage = 5;
+            const startIndex = (shareRequestsPage - 1) * shareRequestsPerPage;
+            const paginatedShareRequests = shareRequests.slice(startIndex, startIndex + shareRequestsPerPage);
+            return paginatedShareRequests.map((request) => {
+              const userProfile = profiles[request.user_id];
+              return (
+                <div key={request.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || 'Не указано'}</p>
+                      <p className="text-white"><strong>Email:</strong> {userProfile?.email || 'Не указано'}</p>
+                      <p className="text-white"><strong>Доля для продажи:</strong> {request.share_percentage?.toFixed(4)}%</p>
+                      <p className="text-white"><strong>USDT кошелек:</strong> {request.usdt_wallet}</p>
+                      <p className="text-white"><strong>Дата:</strong> {new Date(request.created_at).toLocaleDateString('ru-RU')}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-white">Статус</Label>
+                      <select 
+                        value={request.status}
+                        onChange={(e) => handleShareRequestUpdate(request.id, e.target.value)}
+                        className="w-full bg-slate-700 border border-slate-600 text-white rounded p-2 focus:border-cosmo-blue focus:outline-none"
+                      >
+                        <option value="pending">Ожидает</option>
+                        <option value="approved">Одобрено</option>
+                        <option value="rejected">Отклонено</option>
+                      </select>
+                    </div>
+                  </div>
+                  <Textarea
+                    placeholder="Заметки администратора"
+                    value={request.admin_notes || ''}
+                    onChange={(e) => handleShareRequestUpdate(request.id, request.status, e.target.value)}
+                    className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
+                  />
+                </div>
+              );
+            });
+          })()}
         </TabsContent>
 
         <TabsContent value="users" className="space-y-4">
