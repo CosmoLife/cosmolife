@@ -277,7 +277,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       console.log('Profile updated successfully:', data);
-      setProfile(prev => prev ? { ...prev, ...profileData } : null);
+      
+      // Обновляем локальное состояние
+      setProfile(data as UserProfile);
+      
+      // Перезагружаем профиль из базы данных для синхронизации
+      await loadUserProfile(user.id);
     } catch (error) {
       console.error('Error updating profile:', error);
       throw error;
