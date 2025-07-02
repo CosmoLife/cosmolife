@@ -169,6 +169,7 @@ const AdminPanel = () => {
 
   const loadData = async () => {
     try {
+      console.log('Loading admin data...');
       const [investmentsData, shareRequestsData, offer, usersData, investorsData] = await Promise.all([
         getAllInvestments(),
         getAllShareSaleRequests(),
@@ -177,6 +178,7 @@ const AdminPanel = () => {
         loadInvestors()
       ]);
       
+      console.log('Investments data:', investmentsData);
       setInvestments(investmentsData);
       setShareRequests(shareRequestsData);
       setOfferText(offer);
@@ -188,18 +190,27 @@ const AdminPanel = () => {
       setAllUsers(regularUsers);
       setInvestors(investorsData);
       
-      // Загружаем профили для всех пользователей
-      const allUserIds = [
-        ...investmentsData.map(inv => inv.user_id),
-        ...shareRequestsData.map(req => req.user_id)
-      ];
-      const uniqueUserIds = [...new Set(allUserIds)];
-      const profilesData = await loadProfiles(uniqueUserIds);
-      setProfiles(profilesData);
+      // Загружаем ВСЕ профили напрямую из базы, а не только для определённых пользователей
+      const { data: allProfilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*');
+      
+      if (profilesError) {
+        console.error('Error loading all profiles:', profilesError);
+      } else {
+        console.log('All profiles loaded:', allProfilesData);
+        const profilesMap: {[key: string]: any} = {};
+        (allProfilesData || []).forEach(profile => {
+          profilesMap[profile.id] = profile;
+        });
+        setProfiles(profilesMap);
+      }
       
       // Загружаем подтверждения оплаты
       const investmentIds = investmentsData.map(inv => inv.id);
+      console.log('Loading confirmations for investment IDs:', investmentIds);
       const confirmationsData = await loadPaymentConfirmations(investmentIds);
+      console.log('Payment confirmations loaded:', confirmationsData);
       setPaymentConfirmations(confirmationsData);
     } catch (error) {
       console.error('Error loading admin data:', error);
