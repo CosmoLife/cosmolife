@@ -104,7 +104,7 @@ const AdminPanel = () => {
     try {
       const { data: investmentsData, error: investmentsError } = await supabase
         .from('investments')
-        .select('user_id, amount, received_income')
+        .select('user_id, amount')
         .eq('status', 'active');
       
       if (investmentsError) throw investmentsError;
@@ -115,12 +115,10 @@ const AdminPanel = () => {
         const existing = investorMap.get(inv.user_id);
         if (existing) {
           existing.totalAmount += inv.amount;
-          existing.totalIncome += (inv.received_income || 0);
         } else {
           investorMap.set(inv.user_id, {
             user_id: inv.user_id,
-            totalAmount: inv.amount,
-            totalIncome: (inv.received_income || 0)
+            totalAmount: inv.amount
           });
         }
       });
@@ -129,6 +127,7 @@ const AdminPanel = () => {
       
       if (investorIds.length === 0) return [];
       
+      // Загружаем профили инвесторов
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -136,11 +135,30 @@ const AdminPanel = () => {
       
       if (profilesError) throw profilesError;
       
-      // Объединяем данные профилей с инвестиционными данными
+      // Загружаем транзакции дохода для каждого инвестора
+      const { data: incomeData, error: incomeError } = await supabase
+        .from('income_transactions')
+        .select('user_id, amount')
+        .in('user_id', investorIds);
+      
+      if (incomeError) throw incomeError;
+      
+      // Суммируем доходы по пользователям
+      const incomeMap = new Map();
+      (incomeData || []).forEach(transaction => {
+        const existing = incomeMap.get(transaction.user_id);
+        if (existing) {
+          incomeMap.set(transaction.user_id, existing + transaction.amount);
+        } else {
+          incomeMap.set(transaction.user_id, transaction.amount);
+        }
+      });
+      
+      // Объединяем данные профилей с инвестиционными данными и доходами
       return (profilesData || []).map(profile => ({
         ...profile,
         totalInvestment: investorMap.get(profile.id)?.totalAmount || 0,
-        totalIncome: investorMap.get(profile.id)?.totalIncome || 0,
+        totalIncome: incomeMap.get(profile.id) || 0,
         sharePercentage: ((investorMap.get(profile.id)?.totalAmount || 0) * 0.01 / 50000).toFixed(4)
       }));
     } catch (error) {
@@ -237,32 +255,18 @@ const AdminPanel = () => {
     if (!changes) return;
     
     try {
-      // Обновляем доход для всех активных инвестиций этого пользователя
-      const { data: userInvestments, error } = await supabase
-        .from('investments')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('status', 'active');
+      // Создаем запись о начислении дохода в таблице income_transactions
+      const { error: incomeError } = await supabase
+        .from('income_transactions')
+        .insert({
+          user_id: userId,
+          amount: changes.income,
+          transaction_hash: changes.hash,
+          admin_notes: `Начислен доход администратором`,
+          created_by: 'admin' // Здесь можно указать ID текущего админа
+        });
       
-      if (error) throw error;
-      
-      // Распределяем доход пропорционально между всеми инвестициями пользователя
-      if (userInvestments && userInvestments.length > 0) {
-        const incomePerInvestment = changes.income / userInvestments.length;
-        
-        for (const investment of userInvestments) {
-          await updateInvestmentIncome(investment.id, incomePerInvestment);
-        }
-      }
-      
-      // Сохраняем хэш перевода в профиле пользователя (можно добавить отдельную таблицу для истории переводов)
-      await supabase
-        .from('profiles')
-        .update({ 
-          last_transfer_hash: changes.hash,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', userId);
+      if (incomeError) throw incomeError;
       
       // Удаляем изменения из состояния
       setInvestorIncomeChanges(prev => {
@@ -277,6 +281,7 @@ const AdminPanel = () => {
         description: "Доход успешно начислен инвестору",
       });
     } catch (error) {
+      console.error('Error adding income:', error);
       toast({
         title: "Ошибка",
         description: "Не удалось начислить доход",

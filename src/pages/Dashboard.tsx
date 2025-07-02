@@ -38,7 +38,7 @@ const Dashboard = () => {
   const totalInvestment = paidInvestments.reduce((sum, inv) => sum + inv.amount, 0);
   // ИСПРАВЛЕННАЯ ФОРМУЛА: каждые 50,000 рублей = 0.01%
   const totalPercentage = totalInvestment * 0.01 / 50000;
-  const totalReceivedIncome = paidInvestments.reduce((sum, inv) => sum + (inv.received_income || 0), 0);
+  const totalReceivedIncome = incomeTransactions.reduce((sum, t) => sum + t.amount, 0);
   const yearlyReturn = totalPercentage * 357600000 / 100;
   const potentialReturn = totalPercentage * 178800000000 / 100;
 
@@ -149,14 +149,14 @@ const Dashboard = () => {
               </div>
               
               <div 
-                className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center cursor-pointer hover:bg-white/20 transition-colors"
+                className="bg-gradient-to-br from-cosmo-green/20 to-cosmo-green/10 backdrop-blur-lg rounded-2xl p-6 neon-border text-center cursor-pointer hover:from-cosmo-green/30 hover:to-cosmo-green/20 transition-all duration-300 border-cosmo-green/50 shadow-lg shadow-cosmo-green/20 animate-pulse"
                 onClick={() => setShowIncomeTransactions(true)}
               >
-                <h3 className="text-cosmo-green font-bold mb-2 neon-text">Полученный доход</h3>
+                <h3 className="text-cosmo-green font-bold mb-2 neon-text text-lg">💰 Полученный доход</h3>
                 <div className="text-2xl font-bold text-white">
                   {totalReceivedIncome.toLocaleString()} ₽
                 </div>
-                <div className="text-xs text-white/60 mt-1">Нажмите для подробностей</div>
+                <div className="text-xs text-cosmo-green/80 mt-1 font-semibold">👆 Нажмите для просмотра транзакций</div>
               </div>
             </div>
 
@@ -430,13 +430,13 @@ const Dashboard = () => {
       )}
 
       {showIncomeTransactions && (
-        <IncomeTransactionsModal
-          isOpen={showIncomeTransactions}
-          onClose={() => setShowIncomeTransactions(false)}
-          transactions={incomeTransactions}
-          totalInvestment={totalInvestment}
-          totalPercentage={totalPercentage}
-        />
+            <IncomeTransactionsModal
+              isOpen={showIncomeTransactions}
+              onClose={() => setShowIncomeTransactions(false)}
+              transactions={incomeTransactions}
+              totalInvestment={totalInvestment}
+              totalPercentage={totalPercentage}
+            />
       )}
     </div>
   );
