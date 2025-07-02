@@ -262,8 +262,8 @@ const AdminPanel = () => {
           user_id: userId,
           amount: changes.income,
           transaction_hash: changes.hash,
-          admin_notes: `Начислен доход администратором`,
-          created_by: 'admin' // Здесь можно указать ID текущего админа
+          admin_notes: `Начислен доход администратором`
+          // Убираем created_by так как это поле nullable и UUID
         });
       
       if (incomeError) throw incomeError;
