@@ -2,7 +2,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import Cases from "@/pages/Cases";
 import PublicOffer from "@/components/PublicOffer";
 
 const Index = () => {
@@ -11,7 +10,6 @@ const Index = () => {
       <Header />
       <Hero />
       <About />
-      <Cases />
       
       {/* Footer с публичной офертой */}
       <footer className="py-20 border-t border-white/10">
