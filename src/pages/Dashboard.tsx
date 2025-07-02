@@ -15,7 +15,7 @@ import IncomeTransactionsModal from '@/components/IncomeTransactionsModal';
 import { Copy, Info } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, investments, addInvestment, isAdmin, incomeTransactions, getIncomeTransactions } = useAuth();
+  const { user, investments, addInvestment, isAdmin, incomeTransactions, getIncomeTransactions, profile } = useAuth();
   const [investmentAmount, setInvestmentAmount] = useState(50000);
   const [showPayment, setShowPayment] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState<{id: string, method?: string} | null>(null);
@@ -110,10 +110,17 @@ const Dashboard = () => {
               <p className="text-xl text-white/80">
                 Добро пожаловать, {user.email}
               </p>
-            </div>
-            
-            {/* Админская панель */}
-            {isAdmin && <AdminPanel />}
+             </div>
+             
+             {/* DEBUG: Проверка админ роли */}
+             <div className="bg-red-500/20 p-4 rounded mb-4 text-white">
+               <p>DEBUG: user.email = {user.email}</p>
+               <p>DEBUG: profile = {JSON.stringify(profile)}</p>
+               <p>DEBUG: isAdmin = {isAdmin.toString()}</p>
+             </div>
+             
+             {/* Админская панель */}
+             {isAdmin && <AdminPanel />}
             
             {/* Компонент редактирования профиля */}
             <ProfileEditor />
