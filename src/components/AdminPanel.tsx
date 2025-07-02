@@ -36,7 +36,6 @@ const AdminPanel = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    console.log('AdminPanel mounted, loading data...');
     loadData();
   }, []);
 
@@ -170,7 +169,6 @@ const AdminPanel = () => {
 
   const loadData = async () => {
     try {
-      console.log('Loading admin data...');
       const [investmentsData, shareRequestsData, offer, usersData, investorsData] = await Promise.all([
         getAllInvestments(),
         getAllShareSaleRequests(),
@@ -179,7 +177,6 @@ const AdminPanel = () => {
         loadInvestors()
       ]);
       
-      console.log('Investments data:', investmentsData);
       setInvestments(investmentsData);
       setShareRequests(shareRequestsData);
       setOfferText(offer);
@@ -199,7 +196,6 @@ const AdminPanel = () => {
       if (profilesError) {
         console.error('Error loading all profiles:', profilesError);
       } else {
-        console.log('All profiles loaded:', allProfilesData);
         const profilesMap: {[key: string]: any} = {};
         (allProfilesData || []).forEach(profile => {
           profilesMap[profile.id] = profile;
@@ -209,9 +205,7 @@ const AdminPanel = () => {
       
       // Загружаем подтверждения оплаты
       const investmentIds = investmentsData.map(inv => inv.id);
-      console.log('Loading confirmations for investment IDs:', investmentIds);
       const confirmationsData = await loadPaymentConfirmations(investmentIds);
-      console.log('Payment confirmations loaded:', confirmationsData);
       setPaymentConfirmations(confirmationsData);
     } catch (error) {
       console.error('Error loading admin data:', error);
@@ -418,14 +412,12 @@ const AdminPanel = () => {
             const paymentConfirmation = paymentConfirmations[investment.id];
             const changes = pendingChanges[investment.id] || {};
             
-            console.log(`Investment ${investment.id}: user_id=${investment.user_id}, profile=`, userProfile, 'all profiles=', Object.keys(profiles));
-            
             return (
               <div key={investment.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || `Debug: user_id=${investment.user_id}, profile not found`}</p>
-                    <p className="text-white"><strong>Email:</strong> {userProfile?.email || `Debug: user_id=${investment.user_id}, no email`}</p>
+                    <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || 'Не указано'}</p>
+                    <p className="text-white"><strong>Email:</strong> {userProfile?.email || 'Не указано'}</p>
                     <p className="text-white"><strong>Сумма:</strong> {investment.amount?.toLocaleString()} ₽</p>
                     <p className="text-white"><strong>Доля:</strong> {(investment.amount * 0.01 / 50000).toFixed(4)}%</p>
                     <p className="text-white"><strong>Способ оплаты:</strong> {investment.payment_method}</p>

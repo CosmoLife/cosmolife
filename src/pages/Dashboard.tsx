@@ -112,13 +112,6 @@ const Dashboard = () => {
               </p>
              </div>
              
-             {/* DEBUG: Проверка админ роли */}
-             <div className="bg-red-500/20 p-4 rounded mb-4 text-white">
-               <p>DEBUG: user.email = {user.email}</p>
-               <p>DEBUG: profile = {JSON.stringify(profile)}</p>
-               <p>DEBUG: isAdmin = {isAdmin.toString()}</p>
-             </div>
-             
              {/* Админская панель */}
              {isAdmin && <AdminPanel />}
             
