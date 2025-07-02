@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
@@ -197,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -208,26 +209,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
     
-    if (error) {
-      throw error;
-    }
-
-    // Если пользователь зарегистрировался успешно, создаем профиль
-    if (data.user && !data.user.email_confirmed_at) {
-      // Создаем профиль сразу после регистрации
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: data.user.id,
-          full_name: fullName,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
-
-      if (profileError) {
-        console.error('Error creating profile:', profileError);
-      }
-    }
+    if (error) throw error;
   };
 
   const logout = async () => {
@@ -341,13 +323,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const getAllInvestments = async (): Promise<Investment[]> => {
     const { data, error } = await supabase
       .from('investments')
-      .select(`
-        *,
-        profiles!investments_user_id_fkey (
-          full_name,
-          id
-        )
-      `)
+      .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -356,8 +332,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return (data || []).map(investment => ({
       ...investment,
       status: investment.status as Investment['status'],
-      payment_method: investment.payment_method as Investment['payment_method'],
-      user_profile: investment.profiles || null
+      payment_method: investment.payment_method as Investment['payment_method']
     }));
   };
 

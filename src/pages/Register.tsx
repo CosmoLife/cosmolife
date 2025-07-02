@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
-import { supabase } from '@/integrations/supabase/client';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -17,25 +16,6 @@ const Register = () => {
   const { register } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  const checkEmailExists = async (email: string) => {
-    try {
-      // Проверяем существует ли пользователь с таким email
-      const { data } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: 'dummy-password' // Используем фальшивый пароль для проверки
-      });
-      
-      return false; // Если дошли сюда, значит email не существует
-    } catch (error: any) {
-      // Если получили ошибку "Invalid login credentials", значит email не существует
-      if (error.message === 'Invalid login credentials') {
-        return false;
-      }
-      // Если получили другую ошибку, возможно email существует
-      return true;
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,19 +32,6 @@ const Register = () => {
     setLoading(true);
     
     try {
-      // Проверяем, существует ли уже пользователь с таким email
-      const emailExists = await checkEmailExists(email);
-      
-      if (emailExists) {
-        toast({
-          title: "Ошибка",
-          description: "Пользователь с таким email уже зарегистрирован",
-          variant: "destructive"
-        });
-        setLoading(false);
-        return;
-      }
-
       await register(email, password, fullName);
       toast({
         title: "Регистрация успешна!",
@@ -72,19 +39,9 @@ const Register = () => {
       });
       navigate('/dashboard');
     } catch (error: any) {
-      let errorMessage = "Произошла ошибка при регистрации";
-      
-      if (error.message?.includes('User already registered')) {
-        errorMessage = "Пользователь с таким email уже зарегистрирован";
-      } else if (error.message?.includes('Password')) {
-        errorMessage = "Пароль должен содержать минимум 6 символов";
-      } else if (error.message?.includes('Email')) {
-        errorMessage = "Введите корректный email адрес";
-      }
-      
       toast({
         title: "Ошибка регистрации",
-        description: errorMessage,
+        description: error.message || "Произошла ошибка при регистрации",
         variant: "destructive"
       });
     } finally {
