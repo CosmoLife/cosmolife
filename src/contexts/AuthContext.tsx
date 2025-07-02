@@ -253,19 +253,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateProfile = async (profileData: Partial<UserProfile>) => {
-    if (!user) return;
+    if (!user) {
+      console.error('No user found for profile update');
+      throw new Error('Пользователь не авторизован');
+    }
+
+    console.log('Updating profile for user:', user.id, 'with data:', profileData);
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .upsert({
           id: user.id,
           ...profileData,
           updated_at: new Date().toISOString()
-        });
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error updating profile:', error);
+        throw error;
+      }
 
+      console.log('Profile updated successfully:', data);
       setProfile(prev => prev ? { ...prev, ...profileData } : null);
     } catch (error) {
       console.error('Error updating profile:', error);
