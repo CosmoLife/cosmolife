@@ -271,7 +271,7 @@ const Dashboard = () => {
                         </div>
                         <div className="grid md:grid-cols-2 gap-2">
                           <a 
-                            href="https://t.me/CosmoLifeАpp" 
+                            href="https://t.me/CosmoLifeApp" 
                             target="_blank" 
                             rel="noopener noreferrer"
                           >
@@ -280,7 +280,7 @@ const Dashboard = () => {
                             </Button>
                           </a>
                           <a 
-                            href="https://wa.me/79123456789" 
+                            href="https://wa.me/79635124265" 
                             target="_blank" 
                             rel="noopener noreferrer"
                           >

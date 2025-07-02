@@ -36,7 +36,7 @@ const Cases = () => {
             
             <div className="flex flex-col md:flex-row gap-6 justify-center">
               <a 
-                href="https://t.me/CosmoLifeАpp" 
+                href="https://t.me/CosmoLifeApp" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-block"
@@ -47,7 +47,7 @@ const Cases = () => {
               </a>
               
               <a 
-                href="https://wa.me/79123456789" 
+                href="https://wa.me/79635124265" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-block"
