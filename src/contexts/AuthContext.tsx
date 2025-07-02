@@ -261,25 +261,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log('Updating profile for user:', user.id, 'with data:', profileData);
 
     try {
-      const { data, error } = await supabase
+      // Сначала пробуем обновить существующий профиль
+      const { data: updateData, error: updateError } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id,
+        .update({
           ...profileData,
           updated_at: new Date().toISOString()
         })
+        .eq('id', user.id)
         .select()
         .single();
 
-      if (error) {
-        console.error('Supabase error updating profile:', error);
-        throw error;
-      }
+      if (updateError) {
+        console.error('Update error:', updateError);
+        
+        // Если профиль не найден, создаем новый
+        if (updateError.code === 'PGRST116') {
+          console.log('Profile not found, creating new one');
+          const { data: insertData, error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              ...profileData,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .select()
+            .single();
 
-      console.log('Profile updated successfully:', data);
-      
-      // Обновляем локальное состояние
-      setProfile(data as UserProfile);
+          if (insertError) {
+            console.error('Insert error:', insertError);
+            console.error('Error details:', JSON.stringify(insertError, null, 2));
+            throw new Error(`Ошибка создания профиля: ${insertError.message || insertError.details || 'Неизвестная ошибка'}`);
+          }
+
+          console.log('Profile created successfully:', insertData);
+          setProfile(insertData as UserProfile);
+        } else {
+          console.error('Error details:', JSON.stringify(updateError, null, 2));
+          throw new Error(`Ошибка обновления профиля: ${updateError.message || updateError.details || 'Неизвестная ошибка'}`);
+        }
+      } else {
+        console.log('Profile updated successfully:', updateData);
+        setProfile(updateData as UserProfile);
+      }
       
       // Перезагружаем профиль из базы данных для синхронизации
       await loadUserProfile(user.id);
