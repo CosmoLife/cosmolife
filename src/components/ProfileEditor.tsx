@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEffect } from 'react';
 
 const ProfileEditor = () => {
-  const { profile, updateProfile } = useAuth();
+  const { profile, updateProfile, user, session } = useAuth();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,8 +21,33 @@ const ProfileEditor = () => {
     usdt_wallet: profile?.usdt_wallet || ''
   });
 
+  useEffect(() => {
+    console.log('ProfileEditor: Auth state', { user: !!user, session: !!session, profile: !!profile });
+  }, [user, session, profile]);
+
+  if (!user || !session) {
+    return (
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border mb-12">
+        <div className="text-center text-white">
+          <p>Необходимо войти в систему для редактирования профиля</p>
+        </div>
+      </div>
+    );
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    console.log('ProfileEditor: Starting profile update', { formData, profile });
+    
+    if (!profile) {
+      toast({
+        title: "Ошибка",
+        description: "Профиль не загружен. Попробуйте перезагрузить страницу.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     try {
       await updateProfile(formData);
@@ -30,10 +56,11 @@ const ProfileEditor = () => {
         title: "Профиль обновлен",
         description: "Ваши данные успешно сохранены",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('ProfileEditor: Error updating profile:', error);
       toast({
         title: "Ошибка",
-        description: "Не удалось обновить профиль",
+        description: error.message || "Не удалось обновить профиль",
         variant: "destructive"
       });
     }
