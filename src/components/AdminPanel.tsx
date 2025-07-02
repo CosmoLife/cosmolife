@@ -421,8 +421,8 @@ const AdminPanel = () => {
               <div key={investment.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || 'Не указано'}</p>
-                    <p className="text-white"><strong>Email:</strong> {userProfile?.email || 'Не указано'}</p>
+                    <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || `Debug: user_id=${investment.user_id}, profile not found`}</p>
+                    <p className="text-white"><strong>Email:</strong> {userProfile?.email || `Debug: user_id=${investment.user_id}, no email`}</p>
                     <p className="text-white"><strong>Сумма:</strong> {investment.amount?.toLocaleString()} ₽</p>
                     <p className="text-white"><strong>Доля:</strong> {(investment.amount * 0.01 / 50000).toFixed(4)}%</p>
                     <p className="text-white"><strong>Способ оплаты:</strong> {investment.payment_method}</p>
