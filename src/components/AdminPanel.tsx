@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +32,7 @@ const AdminPanel = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [pendingChanges, setPendingChanges] = useState<{[key: string]: any}>({});
+  const [investorIncomeChanges, setInvestorIncomeChanges] = useState<{[key: string]: {income: number, hash: string}}>({});
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -102,12 +104,28 @@ const AdminPanel = () => {
     try {
       const { data: investmentsData, error: investmentsError } = await supabase
         .from('investments')
-        .select('user_id')
+        .select('user_id, amount, received_income')
         .eq('status', 'active');
       
       if (investmentsError) throw investmentsError;
       
-      const investorIds = [...new Set(investmentsData?.map(inv => inv.user_id) || [])];
+      // Группируем инвестиции по пользователям и суммируем их
+      const investorMap = new Map();
+      (investmentsData || []).forEach(inv => {
+        const existing = investorMap.get(inv.user_id);
+        if (existing) {
+          existing.totalAmount += inv.amount;
+          existing.totalIncome += (inv.received_income || 0);
+        } else {
+          investorMap.set(inv.user_id, {
+            user_id: inv.user_id,
+            totalAmount: inv.amount,
+            totalIncome: (inv.received_income || 0)
+          });
+        }
+      });
+      
+      const investorIds = Array.from(investorMap.keys());
       
       if (investorIds.length === 0) return [];
       
@@ -118,7 +136,13 @@ const AdminPanel = () => {
       
       if (profilesError) throw profilesError;
       
-      return profilesData || [];
+      // Объединяем данные профилей с инвестиционными данными
+      return (profilesData || []).map(profile => ({
+        ...profile,
+        totalInvestment: investorMap.get(profile.id)?.totalAmount || 0,
+        totalIncome: investorMap.get(profile.id)?.totalIncome || 0,
+        sharePercentage: ((investorMap.get(profile.id)?.totalAmount || 0) * 0.01 / 50000).toFixed(4)
+      }));
     } catch (error) {
       console.error('Error loading investors:', error);
       return [];
@@ -138,7 +162,12 @@ const AdminPanel = () => {
       setInvestments(investmentsData);
       setShareRequests(shareRequestsData);
       setOfferText(offer);
-      setAllUsers(usersData);
+      
+      // Фильтруем пользователей - показываем только тех, кто НЕ является активным инвестором
+      const activeInvestorIds = new Set(investorsData.map(inv => inv.id));
+      const regularUsers = usersData.filter(user => !activeInvestorIds.has(user.id));
+      
+      setAllUsers(regularUsers);
       setInvestors(investorsData);
       
       // Загружаем профили для всех пользователей
@@ -198,6 +227,69 @@ const AdminPanel = () => {
       ...prev,
       [investmentId]: {
         ...prev[investmentId],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleInvestorIncomeUpdate = async (userId: string) => {
+    const changes = investorIncomeChanges[userId];
+    if (!changes) return;
+    
+    try {
+      // Обновляем доход для всех активных инвестиций этого пользователя
+      const { data: userInvestments, error } = await supabase
+        .from('investments')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('status', 'active');
+      
+      if (error) throw error;
+      
+      // Распределяем доход пропорционально между всеми инвестициями пользователя
+      if (userInvestments && userInvestments.length > 0) {
+        const incomePerInvestment = changes.income / userInvestments.length;
+        
+        for (const investment of userInvestments) {
+          await updateInvestmentIncome(investment.id, incomePerInvestment);
+        }
+      }
+      
+      // Сохраняем хэш перевода в профиле пользователя (можно добавить отдельную таблицу для истории переводов)
+      await supabase
+        .from('profiles')
+        .update({ 
+          last_transfer_hash: changes.hash,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId);
+      
+      // Удаляем изменения из состояния
+      setInvestorIncomeChanges(prev => {
+        const newChanges = { ...prev };
+        delete newChanges[userId];
+        return newChanges;
+      });
+      
+      await loadData();
+      toast({
+        title: "Доход начислен",
+        description: "Доход успешно начислен инвестору",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось начислить доход",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updateInvestorIncomeChange = (userId: string, field: 'income' | 'hash', value: any) => {
+    setInvestorIncomeChanges(prev => ({
+      ...prev,
+      [userId]: {
+        ...prev[userId],
         [field]: value
       }
     }));
@@ -422,6 +514,7 @@ const AdminPanel = () => {
 
         <TabsContent value="users" className="space-y-4">
           <h3 className="text-xl font-bold text-white mb-4">Зарегистрированные пользователи ({allUsers.length})</h3>
+          <p className="text-white/60 mb-4">Пользователи, которые зарегистрировались, но еще не стали активными инвесторами</p>
           {allUsers.map((user) => (
             <div key={user.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -444,24 +537,64 @@ const AdminPanel = () => {
 
         <TabsContent value="investors" className="space-y-4">
           <h3 className="text-xl font-bold text-white mb-4">Активные инвесторы ({investors.length})</h3>
-          {investors.map((investor) => (
-            <div key={investor.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-white"><strong>Имя:</strong> {investor.full_name || 'Не указано'}</p>
-                  <p className="text-white"><strong>Телефон:</strong> {investor.phone || 'Не указано'}</p>
-                  <p className="text-white"><strong>Адрес:</strong> {investor.address || 'Не указан'}</p>
-                  <p className="text-white"><strong>Дата рождения:</strong> {investor.birth_date || 'Не указана'}</p>
+          <p className="text-white/60 mb-4">Пользователи с активными инвестициями</p>
+          {investors.map((investor) => {
+            const incomeChanges = investorIncomeChanges[investor.id] || { income: 0, hash: '' };
+            
+            return (
+              <div key={investor.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <p className="text-white"><strong>Имя:</strong> {investor.full_name || 'Не указано'}</p>
+                    <p className="text-white"><strong>Телефон:</strong> {investor.phone || 'Не указано'}</p>
+                    <p className="text-white"><strong>Адрес:</strong> {investor.address || 'Не указан'}</p>
+                    <p className="text-white"><strong>Дата рождения:</strong> {investor.birth_date || 'Не указана'}</p>
+                    <p className="text-white"><strong>Общая сумма инвестиций:</strong> {investor.totalInvestment?.toLocaleString()} ₽</p>
+                    <p className="text-white"><strong>Доля:</strong> {investor.sharePercentage}%</p>
+                    <p className="text-white"><strong>Текущий доход:</strong> {investor.totalIncome?.toLocaleString()} ₽</p>
+                  </div>
+                  <div>
+                    <p className="text-white"><strong>Telegram:</strong> {investor.telegram_username || 'Не указан'}</p>
+                    <p className="text-white"><strong>WhatsApp:</strong> {investor.whatsapp_number || 'Не указан'}</p>
+                    <p className="text-white"><strong>USDT кошелек:</strong> {investor.usdt_wallet || 'Не указан'}</p>
+                    <p className="text-white"><strong>Дата регистрации:</strong> {new Date(investor.created_at).toLocaleDateString('ru-RU')}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-white"><strong>Telegram:</strong> {investor.telegram_username || 'Не указан'}</p>
-                  <p className="text-white"><strong>WhatsApp:</strong> {investor.whatsapp_number || 'Не указан'}</p>
-                  <p className="text-white"><strong>USDT кошелек:</strong> {investor.usdt_wallet || 'Не указан'}</p>
-                  <p className="text-white"><strong>Дата регистрации:</strong> {new Date(investor.created_at).toLocaleDateString('ru-RU')}</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-white/5 rounded-lg">
+                  <div>
+                    <Label className="text-white mb-2 block">Начислить доход (₽)</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={incomeChanges.income}
+                      onChange={(e) => updateInvestorIncomeChange(investor.id, 'income', Number(e.target.value))}
+                      className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
+                      placeholder="Сумма дохода"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white mb-2 block">Хэш перевода</Label>
+                    <Input
+                      type="text"
+                      value={incomeChanges.hash}
+                      onChange={(e) => updateInvestorIncomeChange(investor.id, 'hash', e.target.value)}
+                      className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
+                      placeholder="Хэш транзакции"
+                    />
+                  </div>
                 </div>
+                
+                <Button
+                  onClick={() => handleInvestorIncomeUpdate(investor.id)}
+                  disabled={!incomeChanges.income || !incomeChanges.hash}
+                  className="bg-cosmo-green hover:bg-cosmo-blue text-white"
+                >
+                  Начислить доход
+                </Button>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </TabsContent>
         
         <TabsContent value="settings" className="space-y-4">
