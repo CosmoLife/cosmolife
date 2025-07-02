@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+import { useInvestment } from '@/contexts/InvestmentContext';
+import { useProfile } from '@/contexts/ProfileContext';
 
 interface ShareSaleModalProps {
   totalPercentage: number;
@@ -12,7 +13,8 @@ interface ShareSaleModalProps {
 }
 
 const ShareSaleModal: React.FC<ShareSaleModalProps> = ({ totalPercentage, onClose }) => {
-  const { createShareSaleRequest, profile } = useAuth();
+  const { createShareSaleRequest } = useInvestment();
+  const { profile } = useProfile();
   const { toast } = useToast();
   const [sharePercentage, setSharePercentage] = useState(totalPercentage);
   const [loading, setLoading] = useState(false);

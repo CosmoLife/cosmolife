@@ -6,11 +6,15 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdmin } from '@/contexts/AdminContext';
+import { useProfile } from '@/contexts/ProfileContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 
 const AdminPanel = () => {
+  const { user } = useAuth();
+  const { isAdmin } = useProfile();
   const { 
     getAllInvestments, 
     updateInvestmentStatus, 
@@ -19,7 +23,7 @@ const AdminPanel = () => {
     updateShareSaleRequestStatus,
     updateOfferText,
     getOfferText
-  } = useAuth();
+  } = useAdmin();
   const { toast } = useToast();
   const [investments, setInvestments] = useState<any[]>([]);
   const [shareRequests, setShareRequests] = useState<any[]>([]);

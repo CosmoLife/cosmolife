@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
+import { useInvestment } from '@/contexts/InvestmentContext';
 
 interface PaymentConfirmationProps {
   investmentId: string;
@@ -17,7 +17,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   paymentMethod,
   onClose 
 }) => {
-  const { uploadPaymentConfirmation } = useAuth();
+  const { uploadPaymentConfirmation } = useInvestment();
   const { toast } = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [transactionHash, setTransactionHash] = useState('');

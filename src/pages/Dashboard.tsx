@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/contexts/ProfileContext';
+import { useInvestment } from '@/contexts/InvestmentContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +17,9 @@ import IncomeTransactionsModal from '@/components/IncomeTransactionsModal';
 import { Copy, Info } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, loading, investments, addInvestment, isAdmin, incomeTransactions, getIncomeTransactions, profile } = useAuth();
+  const { user, loading } = useAuth();
+  const { profile, isAdmin } = useProfile();
+  const { investments, addInvestment, incomeTransactions, getIncomeTransactions } = useInvestment();
   const [investmentAmount, setInvestmentAmount] = useState(50000);
   const [showPayment, setShowPayment] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState<{id: string, method?: string} | null>(null);
