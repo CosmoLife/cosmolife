@@ -134,7 +134,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .from('settings')
       .select('value')
       .eq('key', 'offer_text')
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Error loading offer text:', error);

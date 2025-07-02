@@ -55,10 +55,13 @@ const AdminPanel = () => {
 
   const loadOfferText = async () => {
     try {
+      console.log('Loading offer text...');
       const offer = await getOfferText();
+      console.log('Loaded offer text:', offer);
       setOfferText(offer);
     } catch (error) {
       console.error('Error loading offer text:', error);
+      setOfferText('Текст публичной оферты...');
     }
   };
 
