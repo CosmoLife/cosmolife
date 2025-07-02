@@ -15,7 +15,7 @@ import IncomeTransactionsModal from '@/components/IncomeTransactionsModal';
 import { Copy, Info } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, investments, addInvestment, isAdmin, incomeTransactions, getIncomeTransactions, profile } = useAuth();
+  const { user, loading, investments, addInvestment, isAdmin, incomeTransactions, getIncomeTransactions, profile } = useAuth();
   const [investmentAmount, setInvestmentAmount] = useState(50000);
   const [showPayment, setShowPayment] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState<{id: string, method?: string} | null>(null);
@@ -26,10 +26,18 @@ const Dashboard = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       navigate('/login');
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-white text-xl">Загрузка...</div>
+      </div>
+    );
+  }
 
   if (!user) return null;
 
@@ -104,9 +112,19 @@ const Dashboard = () => {
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-neon-gradient bg-clip-text text-transparent neon-text">
-                Личный кабинет инвестора
-              </h1>
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold bg-neon-gradient bg-clip-text text-transparent neon-text">
+                  Личный кабинет инвестора
+                </h1>
+                <Button
+                  onClick={() => window.location.reload()}
+                  variant="outline"
+                  size="sm"
+                  className="border-cosmo-blue text-cosmo-blue hover:bg-cosmo-blue hover:text-white"
+                >
+                  🔄 Обновить
+                </Button>
+              </div>
               <p className="text-xl text-white/80">
                 Добро пожаловать, {user.email}
               </p>

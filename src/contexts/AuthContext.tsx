@@ -54,6 +54,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: UserProfile | null;
+  loading: boolean;
   investments: Investment[];
   shareSaleRequests: ShareSaleRequest[];
   incomeTransactions: IncomeTransaction[];
@@ -89,6 +90,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [shareSaleRequests, setShareSaleRequests] = useState<ShareSaleRequest[]>([]);
@@ -121,6 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setLoading(false);
       if (session?.user) {
         loadUserProfile(session.user.id);
         loadUserInvestments(session.user.id);
@@ -475,6 +478,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       session,
       profile,
+      loading,
       investments,
       shareSaleRequests,
       incomeTransactions,
