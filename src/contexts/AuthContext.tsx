@@ -217,7 +217,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { error, data } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -228,7 +228,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
     
-    if (error) throw error;
+    if (error) {
+      // Проверяем, если пользователь уже существует
+      if (error.message?.includes('already registered') || error.message?.includes('already been registered') || error.message?.includes('User already registered')) {
+        throw new Error('Пользователь с таким email уже зарегистрирован. Попробуйте войти в систему.');
+      }
+      throw error;
+    }
+    
+    // Если пользователь уже существует, но email не подтвержден
+    if (data.user && !data.session) {
+      throw new Error('Пользователь с таким email уже зарегистрирован. Проверьте почту для подтверждения аккаунта или попробуйте войти в систему.');
+    }
   };
 
   const logout = async () => {
