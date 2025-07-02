@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -183,7 +182,7 @@ const AdminPanel = () => {
       await loadData();
       toast({
         title: "Изменения сохранены",
-        description: "Данные инвестиции успешно обновлены",
+        description: "Данные инвестиций успешно обновлены",
       });
     } catch (error) {
       toast({
@@ -252,9 +251,9 @@ const AdminPanel = () => {
     }
   };
 
-  // Фильтруем инвестиции, требующие подтверждения
+  // Фильтруем инвестиции, требующие подтверждения (НЕ ТОЛЬКО pending и under_review)
   const pendingInvestments = investments.filter(inv => 
-    inv.status === 'pending' || inv.status === 'under_review'
+    inv.status === 'pending' || inv.status === 'under_review' || inv.status === 'paid'
   );
 
   // Пагинация
@@ -317,7 +316,7 @@ const AdminPanel = () => {
                     <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || 'Не указано'}</p>
                     <p className="text-white"><strong>Email:</strong> {userProfile?.email || 'Не указано'}</p>
                     <p className="text-white"><strong>Сумма:</strong> {investment.amount?.toLocaleString()} ₽</p>
-                    <p className="text-white"><strong>Доля:</strong> {investment.percentage?.toFixed(4)}%</p>
+                    <p className="text-white"><strong>Доля:</strong> {(investment.amount * 0.01 / 50000).toFixed(4)}%</p>
                     <p className="text-white"><strong>Способ оплаты:</strong> {investment.payment_method}</p>
                     {investment.transaction_hash && (
                       <p className="text-white"><strong>Хэш транзакции:</strong> {investment.transaction_hash}</p>

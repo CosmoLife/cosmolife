@@ -34,7 +34,8 @@ const Dashboard = () => {
   // Считаем только оплаченные инвестиции (статус 'paid' или 'active')
   const paidInvestments = investments.filter(inv => inv.status === 'paid' || inv.status === 'active');
   const totalInvestment = paidInvestments.reduce((sum, inv) => sum + inv.amount, 0);
-  const totalPercentage = paidInvestments.reduce((sum, inv) => sum + inv.percentage, 0);
+  // ИСПРАВЛЕННАЯ ФОРМУЛА: каждые 50,000 рублей = 0.01%
+  const totalPercentage = totalInvestment * 0.01 / 50000;
   const totalReceivedIncome = paidInvestments.reduce((sum, inv) => sum + (inv.received_income || 0), 0);
   const yearlyReturn = totalPercentage * 357600000 / 100;
   const potentialReturn = totalPercentage * 178800000000 / 100;
@@ -332,7 +333,7 @@ const Dashboard = () => {
                             {investment.amount.toLocaleString()} ₽
                           </div>
                           <div className="text-sm text-white/60">
-                            Доля: {investment.percentage.toFixed(4)}% • {' '}
+                            Доля: {(investment.amount * 0.01 / 50000).toFixed(4)}% • {' '}
                             {new Date(investment.created_at).toLocaleDateString('ru-RU')}
                           </div>
                           {investment.payment_method && (
