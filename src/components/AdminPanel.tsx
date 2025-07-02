@@ -353,6 +353,8 @@ const AdminPanel = () => {
     setLoading(true);
     try {
       await updateOfferText(offerText);
+      // Перезагружаем текст оферты после сохранения
+      await loadOfferText();
       toast({
         title: "Оферта обновлена",
         description: "Текст публичной оферты успешно сохранен",
