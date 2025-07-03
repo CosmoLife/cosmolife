@@ -1,28 +1,34 @@
 
 const Cases = () => {
   return (
-    <section className="py-20 relative">
-      <div className="container mx-auto px-6">
+    <section className="py-20 relative cyber-grid">
+      {/* 2025 Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-holo-accent/20 rounded-full blur-3xl animate-quantum-rotate"></div>
+        <div className="absolute bottom-1/3 left-1/5 w-64 h-64 bg-magnetic-pulse/25 rounded-full blur-2xl animate-neural-glow"></div>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-neon-gradient bg-clip-text text-transparent neon-text">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 holo-text animate-holo-shift">
             Кейсы и достижения
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border text-center">
-              <div className="text-4xl font-bold text-cosmo-blue neon-text mb-4">100+</div>
+            <div className="glass-premium neuro-card quantum-particle magnetic-element premium-hover p-8 text-center">
+              <div className="text-4xl font-bold cyber-text animate-cyber-pulse mb-4">100+</div>
               <h3 className="text-xl font-bold text-white mb-2">Проектов для клиентов</h3>
               <p className="text-white/70">Успешно реализованных проектов различной сложности</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border text-center">
-              <div className="text-4xl font-bold text-cosmo-purple neon-text mb-4">30+</div>
+            <div className="glass-premium neuro-card quantum-particle magnetic-element premium-hover p-8 text-center">
+              <div className="text-4xl font-bold holo-text animate-holo-shift mb-4">30+</div>
               <h3 className="text-xl font-bold text-white mb-2">Собственных запусков</h3>
               <p className="text-white/70">Наши проекты, принесшие прибыль инвесторам</p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border text-center">
-              <div className="text-4xl font-bold text-cosmo-green neon-text mb-4">150+</div>
+            <div className="glass-premium neuro-card quantum-particle magnetic-element premium-hover p-8 text-center">
+              <div className="text-4xl font-bold text-quantum-flux animate-neural-glow mb-4">150+</div>
               <h3 className="text-xl font-bold text-white mb-2">Специалистов</h3>
               <p className="text-white/70">Команда профессионалов по всему миру</p>
             </div>

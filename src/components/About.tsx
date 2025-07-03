@@ -1,16 +1,22 @@
 
 const About = () => {
   return (
-    <section id="about" className="py-20 relative">
-      <div className="container mx-auto px-6">
+    <section id="about" className="py-20 relative cyber-grid">
+      {/* 2025 Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-quantum-flux/20 rounded-full blur-3xl animate-holographic-spin"></div>
+        <div className="absolute bottom-1/4 right-1/5 w-96 h-96 bg-cyber-purple/15 rounded-full blur-3xl animate-energy-flow"></div>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-neon-gradient bg-clip-text text-transparent neon-text">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 holo-text animate-holo-shift">
             О проекте
           </h2>
           
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-cosmo-blue neon-text">IT-гигант мирового уровня</h3>
+              <h3 className="text-2xl font-bold cyber-text animate-cyber-pulse">IT-гигант мирового уровня</h3>
               <p className="text-white/80 leading-relaxed">
                 IT-гигант и фонд с офисами в Америке, Азии, Европе, СНГ 
                 и командами разработчиков по всему миру (более 150 специалистов). 
@@ -19,7 +25,7 @@ const About = () => {
               </p>
             </div>
             
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border">
+            <div className="glass-premium neuro-card quantum-particle magnetic-element p-6">
               <h4 className="text-xl font-bold text-cosmo-purple mb-4 neon-text">Наш опыт:</h4>
               <ul className="space-y-3 text-white/80">
                 <li className="flex items-center">
