@@ -31,7 +31,7 @@ const Cases = () => {
           {/* Блок реальных кейсов */}
           <div className="mb-16">
             <h3 className="text-3xl font-bold text-center mb-12 text-cosmo-blue neon-text">
-              Реальные кейсы наших проектов
+              Некоторые кейсы
             </h3>
             
             <div className="grid md:grid-cols-2 gap-8 mb-12">
@@ -48,7 +48,7 @@ const Cases = () => {
                 </div>
                 <p className="text-white/80 mb-6">
                   Создаем инновационную метавселенную с виртуальной экономикой, 
-                  NFT-интеграцией и блокчейн-технологиями. Проект находится в активной стадии разработки.
+                  NFT-интеграцией, проактивными агентами и блокчейн-технологиями. Проект находится в активной стадии разработки.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
