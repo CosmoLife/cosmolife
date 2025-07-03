@@ -9,30 +9,23 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Base design system colors */
     --background: 222 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
     --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 84% 4.9%;
-
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
@@ -44,6 +37,59 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* 2025 Advanced Design System Variables */
+    
+    /* Holographic Colors */
+    --holo-primary: 280 100% 70%;
+    --holo-secondary: 190 100% 50%;
+    --holo-accent: 320 100% 75%;
+    --holo-chrome: 60 100% 85%;
+    
+    /* Cyberpunk Neon Colors */
+    --cyber-electric: 180 100% 50%;
+    --cyber-magenta: 300 100% 60%;
+    --cyber-lime: 75 100% 60%;
+    --cyber-orange: 30 100% 60%;
+    --cyber-purple: 270 100% 65%;
+    
+    /* Neuromorphic Variables */
+    --neuro-light: 220 15% 25%;
+    --neuro-dark: 220 20% 15%;
+    --neuro-highlight: 220 25% 35%;
+    --neuro-shadow: 220 25% 8%;
+    
+    /* Glass Morphism */
+    --glass-bg: 220 30% 8% / 0.1;
+    --glass-border: 220 100% 50% / 0.2;
+    --glass-highlight: 220 100% 100% / 0.1;
+    
+    /* Magnetic Field Colors */
+    --magnetic-core: 240 100% 50%;
+    --magnetic-field: 270 80% 60%;
+    --magnetic-pulse: 180 100% 70%;
+    
+    /* Quantum Effects */
+    --quantum-flux: 320 100% 65%;
+    --quantum-particle: 190 100% 80%;
+    --quantum-wave: 280 90% 70%;
+    
+    /* Premium Gradients */
+    --gradient-holographic: linear-gradient(45deg, hsl(var(--holo-primary)) 0%, hsl(var(--holo-secondary)) 25%, hsl(var(--holo-accent)) 50%, hsl(var(--holo-chrome)) 75%, hsl(var(--holo-primary)) 100%);
+    --gradient-cyber: linear-gradient(135deg, hsl(var(--cyber-electric)) 0%, hsl(var(--cyber-magenta)) 50%, hsl(var(--cyber-lime)) 100%);
+    --gradient-quantum: radial-gradient(circle at 50% 50%, hsl(var(--quantum-flux)) 0%, hsl(var(--quantum-particle)) 50%, hsl(var(--quantum-wave)) 100%);
+    --gradient-magnetic: conic-gradient(from 0deg, hsl(var(--magnetic-core)), hsl(var(--magnetic-field)), hsl(var(--magnetic-pulse)), hsl(var(--magnetic-core)));
+    
+    /* Advanced Shadows */
+    --shadow-neuro-inset: inset 6px 6px 12px hsl(var(--neuro-shadow)), inset -6px -6px 12px hsl(var(--neuro-highlight));
+    --shadow-neuro-outset: 6px 6px 12px hsl(var(--neuro-shadow)), -6px -6px 12px hsl(var(--neuro-highlight));
+    --shadow-holographic: 0 0 20px hsl(var(--holo-primary) / 0.5), 0 0 40px hsl(var(--holo-secondary) / 0.3), 0 0 60px hsl(var(--holo-accent) / 0.2);
+    --shadow-quantum: 0 0 30px hsl(var(--quantum-flux) / 0.6), 0 0 60px hsl(var(--quantum-particle) / 0.4), 0 0 90px hsl(var(--quantum-wave) / 0.2);
+    
+    /* Transition Variables */
+    --transition-premium: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    --transition-magnetic: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --transition-quantum: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 }
 
@@ -54,23 +100,236 @@ All colors MUST be HSL.
 
   body {
     @apply bg-slate-900 text-foreground;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    background: 
+      radial-gradient(circle at 25% 25%, hsl(var(--quantum-flux) / 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(var(--cyber-electric) / 0.08) 0%, transparent 50%),
+      linear-gradient(135deg, hsl(var(--neuro-dark)) 0%, hsl(var(--background)) 50%, hsl(var(--neuro-shadow)) 100%);
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-quantum);
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: -1;
+    animation: quantum-shift 20s ease-in-out infinite;
   }
 }
 
 @layer components {
+  /* 2025 Advanced Effects */
+  
+  /* Holographic Text Effects */
+  .holo-text {
+    background: var(--gradient-holographic);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: holo-shift 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px hsl(var(--holo-primary) / 0.5));
+  }
+  
+  .cyber-text {
+    color: hsl(var(--cyber-electric));
+    text-shadow: 
+      0 0 5px hsl(var(--cyber-electric)),
+      0 0 10px hsl(var(--cyber-electric)),
+      0 0 15px hsl(var(--cyber-electric)),
+      0 0 20px hsl(var(--cyber-magenta));
+    animation: cyber-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Neuromorphic Elements */
+  .neuro-card {
+    background: linear-gradient(145deg, hsl(var(--neuro-light)), hsl(var(--neuro-dark)));
+    box-shadow: var(--shadow-neuro-outset);
+    border-radius: 20px;
+    transition: var(--transition-premium);
+  }
+  
+  .neuro-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+      var(--shadow-neuro-outset),
+      var(--shadow-holographic);
+  }
+  
+  .neuro-button {
+    background: linear-gradient(145deg, hsl(var(--neuro-light)), hsl(var(--neuro-dark)));
+    box-shadow: var(--shadow-neuro-outset);
+    border: none;
+    transition: var(--transition-premium);
+  }
+  
+  .neuro-button:active {
+    box-shadow: var(--shadow-neuro-inset);
+    transform: scale(0.98);
+  }
+  
+  /* Glass Morphism 2025 */
+  .glass-premium {
+    background: linear-gradient(135deg, 
+      hsl(var(--glass-bg)) 0%, 
+      hsl(var(--glass-highlight)) 100%);
+    backdrop-filter: blur(30px) saturate(200%);
+    border: 1px solid hsl(var(--glass-border));
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      hsl(var(--glass-highlight)) 50%, 
+      transparent 100%);
+    transition: var(--transition-premium);
+  }
+  
+  .glass-premium:hover::before {
+    left: 100%;
+    transition: var(--transition-magnetic);
+  }
+  
+  /* Magnetic Interaction Effects */
+  .magnetic-element {
+    position: relative;
+    cursor: pointer;
+    transition: var(--transition-magnetic);
+  }
+  
+  .magnetic-element::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, hsl(var(--magnetic-pulse) / 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: var(--transition-magnetic);
+    pointer-events: none;
+  }
+  
+  .magnetic-element:hover::before {
+    width: 200px;
+    height: 200px;
+    animation: magnetic-pulse 1s ease-out;
+  }
+  
+  .magnetic-element:hover {
+    transform: scale(1.05) rotate(1deg);
+    filter: brightness(1.2);
+  }
+  
+  /* Quantum Effects */
+  .quantum-border {
+    border: 2px solid transparent;
+    background: linear-gradient(hsl(var(--neuro-dark)), hsl(var(--neuro-dark))) padding-box,
+                var(--gradient-quantum) border-box;
+    animation: quantum-rotate 8s linear infinite;
+  }
+  
+  .quantum-particle {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .quantum-particle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+      hsl(var(--quantum-particle) / 0.2) 0%, 
+      transparent 50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .quantum-particle:hover::after {
+    opacity: 1;
+  }
+  
+  /* Advanced Hover Effects */
+  .premium-hover {
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-premium);
+  }
+  
+  .premium-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-holographic);
+    opacity: 0;
+    transition: var(--transition-premium);
+    mix-blend-mode: overlay;
+  }
+  
+  .premium-hover:hover::before {
+    opacity: 0.1;
+  }
+  
+  .premium-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-quantum);
+  }
+  
+  /* Cyber Grid Background */
+  .cyber-grid {
+    background-image: 
+      linear-gradient(hsl(var(--cyber-electric) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--cyber-electric) / 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: grid-move 20s linear infinite;
+  }
+  
+  /* Legacy Effects (Enhanced) */
   .neon-text {
-    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+    text-shadow: 
+      0 0 5px currentColor, 
+      0 0 10px currentColor, 
+      0 0 15px currentColor,
+      0 0 20px currentColor;
   }
   
   .neon-border {
-    box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, inset 0 0 10px currentColor;
+    box-shadow: 
+      0 0 10px currentColor, 
+      0 0 20px currentColor, 
+      inset 0 0 10px currentColor,
+      0 0 40px currentColor;
   }
   
   .glass-effect {
-    backdrop-filter: blur(16px);
-    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px) saturate(180%);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 100%);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 }
