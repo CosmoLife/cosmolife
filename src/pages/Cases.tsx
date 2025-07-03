@@ -35,29 +35,29 @@ const Cases = () => {
             </h3>
             
             <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {/* Кейс 1 - Метавселенная */}
+              {/* Кейс 1 - Метавселенная в разработке */}
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-2xl p-8 neon-border">
                 <div className="flex items-center mb-6">
                   <div className="w-12 h-12 bg-cosmo-purple rounded-xl flex items-center justify-center mr-4">
                     <span className="text-white font-bold text-xl">🌍</span>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-cosmo-purple neon-text">CosmoVerse</h4>
-                    <p className="text-white/60 text-sm">Метавселенная нового поколения</p>
+                    <h4 className="text-xl font-bold text-cosmo-purple neon-text">Метавселенная</h4>
+                    <p className="text-white/60 text-sm">В активной разработке</p>
                   </div>
                 </div>
                 <p className="text-white/80 mb-6">
-                  Создали собственную метавселенную с виртуальной экономикой, 
-                  NFT-маркетплейсом и интеграцией с блокчейном. Более 50,000 активных пользователей.
+                  Создаем инновационную метавселенную с виртуальной экономикой, 
+                  NFT-интеграцией и блокчейн-технологиями. Проект находится в активной стадии разработки.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-green neon-text">$2.5M</div>
-                    <div className="text-white/60 text-sm">Общая прибыль</div>
+                    <div className="text-2xl font-bold text-cosmo-green neon-text">В работе</div>
+                    <div className="text-white/60 text-sm">Статус проекта</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-blue neon-text">50K+</div>
-                    <div className="text-white/60 text-sm">Пользователей</div>
+                    <div className="text-2xl font-bold text-cosmo-blue neon-text">2024</div>
+                    <div className="text-white/60 text-sm">Планируемый запуск</div>
                   </div>
                 </div>
               </div>
@@ -69,21 +69,21 @@ const Cases = () => {
                     <span className="text-white font-bold text-xl">🤖</span>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-cosmo-blue neon-text">AI Trading Bot</h4>
+                    <h4 className="text-xl font-bold text-cosmo-blue neon-text">AI Trading Platform</h4>
                     <p className="text-white/60 text-sm">Автоматизированная торговля</p>
                   </div>
                 </div>
                 <p className="text-white/80 mb-6">
-                  ИИ-бот для автоматической торговли криптовалютами с машинным обучением 
-                  и анализом рынка в реальном времени. ROI 340% за 6 месяцев.
+                  ИИ-платформа для автоматической торговли криптовалютами с машинным обучением 
+                  и анализом рынка в реальном времени. Высокая доходность для инвесторов.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-green neon-text">340%</div>
-                    <div className="text-white/60 text-sm">ROI за 6 мес</div>
+                    <div className="text-2xl font-bold text-cosmo-green neon-text">300%+</div>
+                    <div className="text-white/60 text-sm">ROI за год</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-purple neon-text">$1.8M</div>
+                    <div className="text-2xl font-bold text-cosmo-purple neon-text">$2M+</div>
                     <div className="text-white/60 text-sm">Объем торгов</div>
                   </div>
                 </div>
@@ -98,48 +98,48 @@ const Cases = () => {
                     <span className="text-white font-bold text-xl">⚡</span>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-cosmo-green neon-text">CosmoSwap</h4>
-                    <p className="text-white/60 text-sm">DeFi протокол</p>
+                    <h4 className="text-xl font-bold text-cosmo-green neon-text">DeFi Protocol</h4>
+                    <p className="text-white/60 text-sm">Децентрализованные финансы</p>
                   </div>
                 </div>
                 <p className="text-white/80 mb-6">
-                  Децентрализованная биржа с уникальным алгоритмом автоматического 
-                  маркет-мейкинга. TVL достигла $15M за первые 3 месяца.
+                  Собственный DeFi протокол с уникальными алгоритмами 
+                  автоматического маркет-мейкинга и высокой ликвидностью.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-blue neon-text">$15M</div>
+                    <div className="text-2xl font-bold text-cosmo-blue neon-text">$12M+</div>
                     <div className="text-white/60 text-sm">TVL</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-purple neon-text">25K+</div>
+                    <div className="text-2xl font-bold text-cosmo-purple neon-text">20K+</div>
                     <div className="text-white/60 text-sm">Транзакций</div>
                   </div>
                 </div>
               </div>
               
-              {/* Кейс 4 - NFT маркетплейс */}
+              {/* Кейс 4 - NFT коллекции */}
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-2xl p-8 neon-border">
                 <div className="flex items-center mb-6">
                   <div className="w-12 h-12 bg-cosmo-purple rounded-xl flex items-center justify-center mr-4">
                     <span className="text-white font-bold text-xl">🎨</span>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-cosmo-purple neon-text">CosmoArt</h4>
-                    <p className="text-white/60 text-sm">NFT маркетплейс</p>
+                    <h4 className="text-xl font-bold text-cosmo-purple neon-text">NFT Collections</h4>
+                    <p className="text-white/60 text-sm">Эксклюзивные коллекции</p>
                   </div>
                 </div>
                 <p className="text-white/80 mb-6">
-                  Премиальный NFT маркетплейс с интеграцией AR/VR просмотра. 
-                  Продано NFT на сумму более $8M с комиссией 2.5%.
+                  Создали и успешно запустили 5 уникальных NFT коллекций 
+                  с инновационными концепциями и высоким спросом на рынке.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-green neon-text">$8M</div>
-                    <div className="text-white/60 text-sm">Продаж NFT</div>
+                    <div className="text-2xl font-bold text-cosmo-green neon-text">$3M+</div>
+                    <div className="text-white/60 text-sm">Общие продажи</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-blue neon-text">12K+</div>
+                    <div className="text-2xl font-bold text-cosmo-blue neon-text">5</div>
                     <div className="text-white/60 text-sm">Коллекций</div>
                   </div>
                 </div>
@@ -149,28 +149,28 @@ const Cases = () => {
             {/* Дополнительные успешные кейсы */}
             <div className="bg-gradient-to-r from-cosmo-blue/10 to-cosmo-purple/10 rounded-2xl p-8 neon-border">
               <h4 className="text-2xl font-bold text-center mb-8 text-cosmo-blue neon-text">
-                Другие успешные проекты
+                Другие успешные направления
               </h4>
               <div className="grid md:grid-cols-4 gap-6">
                 <div className="text-center">
-                  <div className="text-xl font-bold text-cosmo-green neon-text mb-2">GameFi Platform</div>
-                  <div className="text-white/70">$3.2M прибыль</div>
-                  <div className="text-white/50 text-sm">80K игроков</div>
+                  <div className="text-xl font-bold text-cosmo-green neon-text mb-2">GameFi Projects</div>
+                  <div className="text-white/70">$2.5M+ прибыль</div>
+                  <div className="text-white/50 text-sm">60K+ игроков</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold text-cosmo-purple neon-text mb-2">Crypto Wallet</div>
-                  <div className="text-white/70">200K пользователей</div>
-                  <div className="text-white/50 text-sm">$50M активов</div>
+                  <div className="text-xl font-bold text-cosmo-purple neon-text mb-2">Crypto Solutions</div>
+                  <div className="text-white/70">150K+ пользователей</div>
+                  <div className="text-white/50 text-sm">$40M+ активов</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold text-cosmo-blue neon-text mb-2">DAO Platform</div>
-                  <div className="text-white/70">500+ DAO</div>
-                  <div className="text-white/50 text-sm">$25M управление</div>
+                  <div className="text-xl font-bold text-cosmo-blue neon-text mb-2">DAO Platforms</div>
+                  <div className="text-white/70">300+ DAO</div>
+                  <div className="text-white/50 text-sm">$20M+ управление</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xl font-bold text-cosmo-green neon-text mb-2">Staking Protocol</div>
-                  <div className="text-white/70">15% APY</div>
-                  <div className="text-white/50 text-sm">$40M заблокировано</div>
+                  <div className="text-xl font-bold text-cosmo-green neon-text mb-2">Staking Protocols</div>
+                  <div className="text-white/70">12%+ APY</div>
+                  <div className="text-white/50 text-sm">$30M+ заблокировано</div>
                 </div>
               </div>
             </div>
