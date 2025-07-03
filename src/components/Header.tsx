@@ -1,5 +1,5 @@
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -16,6 +16,25 @@ const Header = () => {
   }
   
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleGoToHome = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/');
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleGoToRoadmap = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname !== '/') {
+      navigate('/#roadmap');
+    } else {
+      document.getElementById('roadmap')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -30,8 +49,8 @@ const Header = () => {
         </Link>
         
         <nav className="hidden md:flex items-center space-x-8">
-          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="text-white hover:text-cosmo-blue transition-colors">Главная</a>
-          <a href="#roadmap" className="text-white hover:text-cosmo-blue transition-colors">Дорожная карта</a>
+          <a href="#" onClick={handleGoToHome} className="text-white hover:text-cosmo-blue transition-colors">Главная</a>
+          <a href="#roadmap" onClick={handleGoToRoadmap} className="text-white hover:text-cosmo-blue transition-colors">Дорожная карта</a>
           {user ? (
             <>
               <Link to="/dashboard" className="text-white hover:text-cosmo-blue transition-colors">Кабинет</Link>
