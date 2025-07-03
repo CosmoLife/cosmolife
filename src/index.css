@@ -53,6 +53,13 @@ All colors MUST be HSL.
     --cyber-orange: 30 100% 60%;
     --cyber-purple: 270 100% 65%;
     
+    /* Cosmo Brand Colors */
+    --cosmo-purple: 270 85% 65%;
+    --cosmo-blue: 210 90% 60%;
+    --cosmo-green: 140 85% 55%;
+    --cosmo-gold: 45 100% 60%;
+    --space-dark: 222 84% 4.9%;
+    
     /* Neuromorphic Variables */
     --neuro-light: 220 15% 25%;
     --neuro-dark: 220 20% 15%;
