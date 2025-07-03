@@ -1,6 +1,12 @@
 const Roadmap = () => {
   const roadmapItems = [
     {
+      period: "1-2 кв. 2025",
+      title: "Разработка приложения Cosmo Life",
+      description: "Разработка приложения Cosmo Life в Telegram и мобильного приложения для Android и iOS за собственные средства. Посевные инвестиции от ангелов в размере 10,000,000 рублей. Все выполнено, разработка на 99%",
+      status: "completed"
+    },
+    {
       period: "Июль 2025",
       title: "Запуск сбора инвестиций",
       description: "Запуск сбора инвестиций для маркетинга проекта с личным кабинетом, привлечение 100,000,000 рублей, продаем 10% долей в проекте",
@@ -46,6 +52,8 @@ const Roadmap = () => {
 
   const getStatusStyles = (status: string) => {
     switch (status) {
+      case "completed":
+        return "border-cosmo-green shadow-holographic text-cosmo-green";
       case "current":
         return "border-quantum-flux shadow-quantum text-cosmo-purple";
       case "upcoming":
@@ -102,6 +110,13 @@ const Roadmap = () => {
                     <p className="text-white/80 leading-relaxed text-lg">
                       {item.description}
                     </p>
+                    
+                    {item.status === "completed" && (
+                      <div className="mt-4 flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-cosmo-green rounded-full"></div>
+                        <span className="text-cosmo-green font-semibold neon-text">✅ Выполнено</span>
+                      </div>
+                    )}
                     
                     {item.status === "current" && (
                       <div className="mt-4 flex items-center space-x-2">
