@@ -107,8 +107,8 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
           </div>
         ) : (
           <div className="max-w-3xl mx-auto space-y-8">
-            <div className="glass-premium neuro-card rounded-2xl p-8 border border-white/10 magnetic-element">
-              <Label htmlFor="amount" className="text-white mb-4 block text-xl font-bold cyber-text">
+            <div className="glass-premium rounded-2xl p-8 border border-white/10">
+              <Label htmlFor="amount" className="text-white mb-4 block text-xl font-bold">
                 Сумма инвестиций (от 50,000 ₽)
               </Label>
               <Input
@@ -118,9 +118,9 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
                 step="1000"
                 value={investmentAmount}
                 onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                className="bg-white/10 border-white/20 text-white text-xl h-14 rounded-xl transition-all duration-300 focus:border-quantum-flux focus:ring-2 focus:ring-quantum-flux/20 animate-neural-glow"
+                className="bg-white/10 border-white/20 text-white text-xl h-14 rounded-xl transition-colors duration-200 focus:border-quantum-flux focus:ring-2 focus:ring-quantum-flux/20"
               />
-              <p className="text-lg text-quantum-flux mt-3 font-bold holo-text">
+              <p className="text-lg text-quantum-flux mt-3 font-bold">
                 Доля: {(investmentAmount * 0.01 / 50000).toFixed(4)}%
               </p>
             </div>
