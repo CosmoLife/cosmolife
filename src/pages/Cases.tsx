@@ -56,7 +56,7 @@ const Cases = () => {
                     <div className="text-white/60 text-sm">Статус проекта</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-cosmo-blue neon-text">2024</div>
+                    <div className="text-2xl font-bold text-cosmo-blue neon-text">2026-27</div>
                     <div className="text-white/60 text-sm">Планируемый запуск</div>
                   </div>
                 </div>
