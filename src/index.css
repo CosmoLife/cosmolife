@@ -132,27 +132,25 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* 2025 Advanced Effects */
+  /* 2025 Optimized Effects */
   
-  /* Holographic Text Effects */
+  /* Holographic Text Effects - Optimized */
   .holo-text {
     background: var(--gradient-holographic);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: holo-shift 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 10px hsl(var(--holo-primary) / 0.5));
+    /* Removed heavy animation for better performance */
+    filter: drop-shadow(0 0 5px hsl(var(--holo-primary) / 0.3));
   }
   
   .cyber-text {
     color: hsl(var(--cyber-electric));
     text-shadow: 
-      0 0 5px hsl(var(--cyber-electric)),
-      0 0 10px hsl(var(--cyber-electric)),
-      0 0 15px hsl(var(--cyber-electric)),
-      0 0 20px hsl(var(--cyber-magenta));
-    animation: cyber-pulse 2s ease-in-out infinite;
+      0 0 3px hsl(var(--cyber-electric)),
+      0 0 6px hsl(var(--cyber-electric));
+    /* Removed heavy animation for better performance */
   }
   
   /* Neuromorphic Elements */
@@ -164,10 +162,8 @@ All colors MUST be HSL.
   }
   
   .neuro-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 
-      var(--shadow-neuro-outset),
-      var(--shadow-holographic);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-neuro-outset);
   }
   
   .neuro-button {
@@ -315,21 +311,17 @@ All colors MUST be HSL.
     animation: grid-move 20s linear infinite;
   }
   
-  /* Legacy Effects (Enhanced) */
+  /* Legacy Effects (Optimized) */
   .neon-text {
     text-shadow: 
-      0 0 5px currentColor, 
-      0 0 10px currentColor, 
-      0 0 15px currentColor,
-      0 0 20px currentColor;
+      0 0 3px currentColor, 
+      0 0 6px currentColor;
   }
   
   .neon-border {
     box-shadow: 
-      0 0 10px currentColor, 
-      0 0 20px currentColor, 
-      inset 0 0 10px currentColor,
-      0 0 40px currentColor;
+      0 0 5px currentColor, 
+      0 0 10px currentColor;
   }
   
   .glass-effect {
