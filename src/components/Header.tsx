@@ -31,6 +31,7 @@ const Header = () => {
         
         <nav className="hidden md:flex items-center space-x-8">
           <Link to="/" className="text-white hover:text-cosmo-blue transition-colors">Главная</Link>
+          <a href="#roadmap" className="text-white hover:text-cosmo-blue transition-colors">Дорожная карта</a>
           {user ? (
             <>
               <Link to="/dashboard" className="text-white hover:text-cosmo-blue transition-colors">Кабинет</Link>
