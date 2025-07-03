@@ -26,11 +26,6 @@ const Header = () => {
     <header className="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3">
-          <img 
-            src="/lovable-uploads/c078ebf8-4837-4c3a-a7fb-8ab50ca3e76c.png" 
-            alt="Cosmo Life" 
-            className="h-10 w-10 animate-float"
-          />
           <span className="text-2xl font-bold text-white neon-text">COSMO</span>
         </Link>
         
