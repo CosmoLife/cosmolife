@@ -116,23 +116,23 @@ const Dashboard = () => {
     <div className="min-h-screen">
       <Header />
       
+      {/* Закрепленная кнопка обновления */}
+      <Button
+        onClick={() => window.location.reload()}
+        variant="outline"
+        size="sm"
+        className="fixed top-20 right-4 z-40 border-cosmo-blue text-cosmo-blue hover:bg-cosmo-blue hover:text-white bg-black/80 backdrop-blur-sm"
+      >
+        🔄
+      </Button>
+      
       <section className="pt-32 pb-20">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <h1 className="text-4xl md:text-5xl font-bold bg-neon-gradient bg-clip-text text-transparent neon-text">
-                  Личный кабинет инвестора
-                </h1>
-                <Button
-                  onClick={() => window.location.reload()}
-                  variant="outline"
-                  size="sm"
-                  className="border-cosmo-blue text-cosmo-blue hover:bg-cosmo-blue hover:text-white"
-                >
-                  🔄 Обновить
-                </Button>
-              </div>
+              <h1 className="text-4xl md:text-5xl font-bold bg-neon-gradient bg-clip-text text-transparent neon-text mb-4">
+                Личный кабинет инвестора
+              </h1>
               <p className="text-xl text-white/80">
                 Добро пожаловать, {user.email}
               </p>
