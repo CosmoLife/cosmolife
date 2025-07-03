@@ -148,7 +148,7 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
               
               {/* USDT */}
               <div className="bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-xl p-5 border border-green-500/20">
-                <div className="flex justify-between items-center mb-3">
+                <div className="flex justify-between items-center mb-4">
                   <span className="font-bold text-green-300 text-lg">USDT BEP-20</span>
                   <Button
                     onClick={() => copyToClipboard('0x9e00d62d50ef12d41394082d63aee3abf286d0c5', 'Адрес кошелька')}
@@ -159,6 +159,13 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
                     <Copy className="w-4 h-4 mr-2" />
                     Копировать адрес
                   </Button>
+                </div>
+                
+                {/* Адрес кошелька - большой и по центру */}
+                <div className="bg-green-500/5 rounded-lg p-4 mb-4 border border-green-500/20">
+                  <p className="text-center text-green-300 font-mono text-lg font-bold break-all">
+                    0x9e00d62d50ef12d41394082d63aee3abf286d0c5
+                  </p>
                 </div>
                 
                 {/* Информация о сумме USDT */}
@@ -179,7 +186,6 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
                   )}
                 </div>
                 
-                <p className="text-xs text-white/60 mb-3">0x9e00d62d50ef12d41394082d63aee3abf286d0c5</p>
                 <Button
                   onClick={() => handleInvestment('usdt')}
                   className="bg-green-600 hover:bg-green-700 text-white w-full rounded-lg py-3 font-medium"
