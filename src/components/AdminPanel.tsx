@@ -11,7 +11,6 @@ import { useProfile } from '@/contexts/ProfileContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { ChevronLeft, ChevronRight, Eye } from 'lucide-react';
-import ScreenshotsManager from '@/components/admin/ScreenshotsManager';
 
 const AdminPanel = () => {
   const { user } = useAuth();
@@ -400,12 +399,11 @@ const AdminPanel = () => {
       </h2>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="pending">Требуют подтверждения</TabsTrigger>
           <TabsTrigger value="share-requests">Заявки на продажу</TabsTrigger>
           <TabsTrigger value="users">Пользователи</TabsTrigger>
           <TabsTrigger value="investors">Инвесторы</TabsTrigger>
-          <TabsTrigger value="screenshots">Скриншоты</TabsTrigger>
           <TabsTrigger value="settings">Настройки</TabsTrigger>
         </TabsList>
         
@@ -737,10 +735,6 @@ const AdminPanel = () => {
           })()}
         </TabsContent>
         
-        <TabsContent value="screenshots">
-          <ScreenshotsManager />
-        </TabsContent>
-
         <TabsContent value="settings" className="space-y-4">
           <h3 className="text-xl font-bold text-white mb-4">Настройки</h3>
           <div className="space-y-4">
