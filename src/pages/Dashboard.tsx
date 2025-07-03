@@ -121,7 +121,7 @@ const Dashboard = () => {
         onClick={() => window.location.reload()}
         variant="outline"
         size="sm"
-        className="fixed top-20 right-4 z-40 border-cosmo-blue text-cosmo-blue hover:bg-cosmo-blue hover:text-white bg-black/80 backdrop-blur-sm"
+        className="fixed top-20 right-4 z-40 glass-premium neuro-card border border-white/20 text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm rounded-xl transition-all duration-300"
       >
         🔄
       </Button>

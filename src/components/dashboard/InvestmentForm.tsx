@@ -59,12 +59,11 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
   };
 
   return (
-    <div className="relative overflow-hidden glass-premium neuro-card quantum-particle magnetic-element rounded-3xl border border-gradient-to-r from-cosmo-blue/30 to-cosmo-purple/30 shadow-2xl shadow-cosmo-blue/10 mb-12">
-      {/* 2025 Advanced Background Effects */}
+    <div className="relative overflow-hidden glass-premium neuro-card rounded-3xl border border-white/10 shadow-2xl mb-12">
+      {/* Subtle Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 right-1/3 w-40 h-40 bg-quantum-flux/20 rounded-full blur-3xl animate-holographic-spin"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-32 h-32 bg-cyber-electric/15 rounded-full blur-2xl animate-energy-flow"></div>
-        <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-magnetic-pulse/20 rounded-full blur-xl animate-neural-glow"></div>
+        <div className="absolute top-1/4 right-1/3 w-40 h-40 bg-quantum-flux/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-32 h-32 bg-cyber-electric/8 rounded-full blur-2xl"></div>
       </div>
       
       <div className="relative p-8 z-10">
@@ -93,10 +92,10 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
               <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
                 <Button
                   onClick={() => onShowPayment(true)}
-                  className="group relative bg-gradient-to-r from-cosmo-blue via-cosmo-purple to-cosmo-green hover:shadow-2xl hover:shadow-cosmo-blue/30 text-white font-bold py-5 px-10 text-xl rounded-2xl border border-cosmo-blue/30 transition-all duration-300 hover:scale-[1.05] animate-neural-glow"
+                  className="group relative bg-gradient-to-r from-cosmo-blue via-cosmo-purple to-cosmo-green hover:shadow-xl text-white font-bold py-5 px-10 text-xl rounded-2xl border border-cosmo-blue/30 transition-all duration-200 hover:scale-[1.02]"
                 >
-                  <span className="relative z-10 holo-text">Инвестировать</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-cosmo-blue/20 to-cosmo-purple/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="relative z-10">Инвестировать</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-cosmo-blue/20 to-cosmo-purple/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 </Button>
                 
                 <div className="flex items-center gap-3 text-white/70">

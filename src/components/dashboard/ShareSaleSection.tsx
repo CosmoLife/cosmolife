@@ -21,11 +21,11 @@ const ShareSaleSection: React.FC<ShareSaleSectionProps> = ({
   };
 
   return (
-    <div className="relative overflow-hidden glass-premium neuro-card quantum-particle magnetic-element rounded-3xl p-8 mb-12">
-      {/* 2025 Background Effects */}
+    <div className="relative overflow-hidden glass-premium neuro-card rounded-3xl p-8 mb-12">
+      {/* Subtle Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/3 left-1/4 w-32 h-32 bg-quantum-flux/20 rounded-full blur-3xl animate-holographic-spin"></div>
-        <div className="absolute bottom-1/4 right-1/5 w-24 h-24 bg-cyber-purple/15 rounded-full blur-2xl animate-energy-flow"></div>
+        <div className="absolute top-1/3 left-1/4 w-32 h-32 bg-quantum-flux/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/5 w-24 h-24 bg-cyber-purple/8 rounded-full blur-2xl"></div>
       </div>
 
       <div className="relative z-10 text-center space-y-6">
@@ -36,10 +36,10 @@ const ShareSaleSection: React.FC<ShareSaleSectionProps> = ({
         <div className="flex flex-col items-center gap-6">
           <Button
             onClick={handleShareSale}
-            className="group relative bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-4 px-8 text-lg rounded-xl border border-red-500/30 transition-all duration-300 hover:scale-[1.02] animate-neural-glow"
+            className="group relative bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-4 px-8 text-lg rounded-xl border border-red-500/30 transition-all duration-200 hover:scale-[1.01]"
           >
-            <span className="relative z-10 cyber-text">Продать мою долю</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-red-700/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <span className="relative z-10">Продать мою долю</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-red-700/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
           </Button>
           
           <Button
