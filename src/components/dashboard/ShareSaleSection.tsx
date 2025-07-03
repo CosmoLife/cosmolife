@@ -21,28 +21,44 @@ const ShareSaleSection: React.FC<ShareSaleSectionProps> = ({
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 neon-border mb-12">
-      <div className="flex items-center justify-center gap-4">
-        <Button
-          onClick={handleShareSale}
-          className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-3 px-6"
-        >
-          Продать мою долю
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onMouseEnter={() => setShowCommissionInfo(true)}
-          onMouseLeave={() => setShowCommissionInfo(false)}
-          className="text-white/60 hover:text-white relative"
-        >
-          <Info className="w-4 h-4" />
-          {showCommissionInfo && (
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg shadow-lg whitespace-nowrap z-10">
-              Внимание: При продаже доли через платформу мы берем комиссию 20% от суммы сделки.
-            </div>
-          )}
-        </Button>
+    <div className="relative overflow-hidden glass-premium neuro-card quantum-particle magnetic-element rounded-3xl p-8 mb-12">
+      {/* 2025 Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/3 left-1/4 w-32 h-32 bg-quantum-flux/20 rounded-full blur-3xl animate-holographic-spin"></div>
+        <div className="absolute bottom-1/4 right-1/5 w-24 h-24 bg-cyber-purple/15 rounded-full blur-2xl animate-energy-flow"></div>
+      </div>
+
+      <div className="relative z-10 text-center space-y-6">
+        <h2 className="text-3xl font-bold holo-text animate-holo-shift mb-6">
+          Управление долей
+        </h2>
+        
+        <div className="flex flex-col items-center gap-6">
+          <Button
+            onClick={handleShareSale}
+            className="group relative bg-gradient-to-r from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-4 px-8 text-lg rounded-xl border border-red-500/30 transition-all duration-300 hover:scale-[1.02] animate-neural-glow"
+          >
+            <span className="relative z-10 cyber-text">Продать мою долю</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-red-700/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onMouseEnter={() => setShowCommissionInfo(true)}
+            onMouseLeave={() => setShowCommissionInfo(false)}
+            className="relative text-white/60 hover:text-white transition-all duration-300 hover:scale-105"
+          >
+            <Info className="w-5 h-5 animate-cyber-pulse" />
+            {showCommissionInfo && (
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-3 px-4 py-3 glass-premium rounded-xl shadow-2xl whitespace-nowrap z-20 border border-red-500/30">
+                <div className="text-sm text-white font-medium">
+                  <span className="text-red-300">⚠️ Внимание:</span> При продаже доли через платформу мы берем комиссию 20% от суммы сделки.
+                </div>
+              </div>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -33,11 +33,18 @@ const ShareSaleHistory: React.FC<ShareSaleHistoryProps> = ({
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 neon-border">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-red-400 neon-text">
-          Заявки на продажу доли
-        </h2>
+    <div className="relative overflow-hidden glass-premium neuro-card quantum-particle magnetic-element rounded-3xl p-8">
+      {/* 2025 Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-cyber-magenta/20 rounded-full blur-3xl animate-quantum-rotate"></div>
+        <div className="absolute bottom-1/3 left-1/5 w-24 h-24 bg-quantum-flux/15 rounded-full blur-2xl animate-neural-glow"></div>
+      </div>
+
+      <div className="relative z-10">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-4xl font-bold holo-text animate-holo-shift">
+            Заявки на продажу доли
+          </h2>
         {shareSaleRequests.length > itemsPerPage && (
           <div className="flex items-center gap-2">
             <Button
@@ -69,7 +76,7 @@ const ShareSaleHistory: React.FC<ShareSaleHistoryProps> = ({
         {paginatedShareRequests.map((request) => (
           <div
             key={request.id}
-            className="bg-white/5 rounded-xl p-6 border border-white/10"
+            className="glass-premium neuro-card rounded-2xl p-6 border border-white/10 magnetic-element transition-all duration-300 hover:scale-[1.02]"
           >
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -108,9 +115,12 @@ const ShareSaleHistory: React.FC<ShareSaleHistoryProps> = ({
         ))}
       </div>
       
-      <div className="mt-6 text-sm text-white/60 bg-white/5 p-4 rounded-lg">
-        <strong>Информация:</strong> При одобрении заявки ваша доля будет автоматически продана следующему инвестору. 
-        Средства поступят на указанный USDT кошелек за вычетом комиссии 20%.
+        <div className="mt-8 glass-premium rounded-2xl p-6 border border-cyan-500/20">
+          <div className="text-sm text-white/90 font-medium">
+            <span className="cyber-text">💡 Информация:</span> При одобрении заявки ваша доля будет автоматически продана следующему инвестору. 
+            Средства поступят на указанный USDT кошелек за вычетом комиссии 20%.
+          </div>
+        </div>
       </div>
     </div>
   );
