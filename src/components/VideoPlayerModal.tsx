@@ -13,7 +13,7 @@ interface VideoPlayerModalProps {
 const VideoPlayerModal = ({ isOpen, onClose, videoUrl, title, description }: VideoPlayerModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl w-full h-[80vh] p-0 bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20">
+      <DialogContent className="max-w-[95vw] w-full max-h-[90vh] h-full p-0 bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 overflow-hidden">
         <DialogHeader className="p-6 pb-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-2xl font-bold text-white">
@@ -33,16 +33,16 @@ const VideoPlayerModal = ({ isOpen, onClose, videoUrl, title, description }: Vid
           )}
         </DialogHeader>
         
-        <div className="flex-1 p-6 pt-4">
-          <div className="w-full h-full rounded-lg overflow-hidden bg-black">
+        <div className="flex-1 p-3 md:p-6 pt-2 md:pt-4">
+          <div className="w-full h-full rounded-lg overflow-hidden bg-black flex items-center justify-center">
             <video
               src={videoUrl}
               controls
-              className="w-full h-full object-contain"
+              className="w-full h-full max-w-full max-h-full object-contain"
               controlsList="nodownload"
               preload="auto"
               playsInline
-              style={{ maxHeight: '100%' }}
+              webkit-playsinline="true"
               onError={(e) => {
                 console.error('Video playback error:', e);
               }}

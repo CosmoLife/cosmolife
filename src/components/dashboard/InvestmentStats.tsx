@@ -19,7 +19,18 @@ const InvestmentStats: React.FC<InvestmentStatsProps> = ({
   onShowIncomeTransactions
 }) => {
   return (
-    <div className="grid md:grid-cols-5 gap-6 mb-12">
+    <div className="space-y-6 mb-12">
+      {totalPercentage > 0 && (
+        <div className="glass-premium rounded-2xl p-6 border border-cosmo-blue/30 text-center bg-cosmo-blue/5">
+          <h3 className="text-cosmo-blue font-bold mb-3 text-lg">📹 Эксклюзивные видео обновления</h3>
+          <p className="text-white/80 text-sm">
+            Как инвестор с долей {totalPercentage.toFixed(4)}%, у вас есть доступ к закрытым видео о разработке Cosmo Life. 
+            Узнавайте первыми о новых функциях и достижениях команды!
+          </p>
+        </div>
+      )}
+      
+      <div className="grid md:grid-cols-5 gap-6">
       <div className="glass-premium rounded-2xl p-6 border border-white/10 text-center">
         <h3 className="text-cosmo-blue font-bold mb-2">Общие инвестиции</h3>
         <div className="text-2xl font-bold text-white">
@@ -57,6 +68,7 @@ const InvestmentStats: React.FC<InvestmentStatsProps> = ({
           {totalReceivedIncome.toLocaleString()} ₽
         </div>
         <div className="text-xs text-cosmo-green/80 mt-1 font-semibold">👆 Нажмите для просмотра транзакций</div>
+      </div>
       </div>
     </div>
   );
