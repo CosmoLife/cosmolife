@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import DayWithCosmo from "@/components/DayWithCosmo";
 import Cases from "@/pages/Cases";
 import Roadmap from "@/components/Roadmap";
 import PublicOffer from "@/components/PublicOffer";
@@ -12,6 +13,7 @@ const Index = () => {
       <Header />
       <Hero />
       <About />
+      <DayWithCosmo />
       <Cases />
       <Roadmap />
       
