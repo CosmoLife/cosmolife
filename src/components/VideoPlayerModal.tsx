@@ -40,8 +40,20 @@ const VideoPlayerModal = ({ isOpen, onClose, videoUrl, title, description }: Vid
               controls
               className="w-full h-full object-contain"
               controlsList="nodownload"
-              preload="metadata"
+              preload="auto"
+              playsInline
+              style={{ maxHeight: '100%' }}
+              onError={(e) => {
+                console.error('Video playback error:', e);
+              }}
+              onLoadStart={() => {
+                console.log('Video loading started');
+              }}
+              onCanPlay={() => {
+                console.log('Video can play');
+              }}
             >
+              <source src={videoUrl} type="video/mp4" />
               Ваш браузер не поддерживает воспроизведение видео.
             </video>
           </div>
