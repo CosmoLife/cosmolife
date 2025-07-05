@@ -26,6 +26,18 @@ interface ShareSaleRequest {
   created_at: string;
 }
 
+interface InvestorVideo {
+  id: string;
+  title: string;
+  description?: string;
+  video_url: string;
+  video_name: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by?: string;
+}
+
 interface AdminContextType {
   getAllInvestments: () => Promise<Investment[]>;
   updateInvestmentStatus: (id: string, status: Investment['status'], adminNotes?: string) => Promise<void>;
@@ -34,6 +46,10 @@ interface AdminContextType {
   updateShareSaleRequestStatus: (id: string, status: ShareSaleRequest['status'], adminNotes?: string) => Promise<void>;
   updateOfferText: (text: string) => Promise<void>;
   getOfferText: () => Promise<string>;
+  getAllInvestorVideos: () => Promise<InvestorVideo[]>;
+  uploadInvestorVideo: (file: File, title: string, description?: string) => Promise<void>;
+  updateVideoStatus: (id: string, isActive: boolean) => Promise<void>;
+  deleteInvestorVideo: (id: string) => Promise<void>;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -144,6 +160,85 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return data?.value || 'Текст публичной оферты...';
   };
 
+  const getAllInvestorVideos = async (): Promise<InvestorVideo[]> => {
+    const { data, error } = await supabase
+      .from('investor_videos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    
+    return data || [];
+  };
+
+  const uploadInvestorVideo = async (file: File, title: string, description?: string) => {
+    // Создаем уникальное имя файла
+    const fileName = `${Date.now()}-${file.name}`;
+    
+    // Загружаем файл в storage
+    const { error: uploadError } = await supabase.storage
+      .from('investor-videos')
+      .upload(fileName, file);
+
+    if (uploadError) throw uploadError;
+
+    // Получаем публичный URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('investor-videos')
+      .getPublicUrl(fileName);
+
+    // Сохраняем запись в БД
+    const { error: dbError } = await supabase
+      .from('investor_videos')
+      .insert({
+        title,
+        description,
+        video_url: publicUrl,
+        video_name: fileName,
+        created_by: user?.id
+      });
+
+    if (dbError) throw dbError;
+  };
+
+  const updateVideoStatus = async (id: string, isActive: boolean) => {
+    const { error } = await supabase
+      .from('investor_videos')
+      .update({ 
+        is_active: isActive,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (error) throw error;
+  };
+
+  const deleteInvestorVideo = async (id: string) => {
+    // Сначала получаем информацию о видео для удаления файла
+    const { data: video, error: fetchError } = await supabase
+      .from('investor_videos')
+      .select('video_name')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // Удаляем файл из storage
+    const { error: storageError } = await supabase.storage
+      .from('investor-videos')
+      .remove([video.video_name]);
+
+    if (storageError) throw storageError;
+
+    // Удаляем запись из БД
+    const { error: dbError } = await supabase
+      .from('investor_videos')
+      .delete()
+      .eq('id', id);
+
+    if (dbError) throw dbError;
+  };
+
   return (
     <AdminContext.Provider value={{
       getAllInvestments,
@@ -152,7 +247,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       getAllShareSaleRequests,
       updateShareSaleRequestStatus,
       updateOfferText,
-      getOfferText
+      getOfferText,
+      getAllInvestorVideos,
+      uploadInvestorVideo,
+      updateVideoStatus,
+      deleteInvestorVideo
     }}>
       {children}
     </AdminContext.Provider>

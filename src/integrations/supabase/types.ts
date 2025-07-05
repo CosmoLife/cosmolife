@@ -120,6 +120,42 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_videos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+          video_name: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+          video_name: string
+          video_url: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+          video_name?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       payment_confirmations: {
         Row: {
           admin_notes: string | null
