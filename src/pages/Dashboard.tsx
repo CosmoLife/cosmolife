@@ -17,6 +17,7 @@ import InvestmentForm from '@/components/dashboard/InvestmentForm';
 import InvestmentHistory from '@/components/dashboard/InvestmentHistory';
 import ShareSaleSection from '@/components/dashboard/ShareSaleSection';
 import ShareSaleHistory from '@/components/dashboard/ShareSaleHistory';
+import InvestorVideosSection from '@/components/dashboard/InvestorVideosSection';
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
@@ -182,6 +183,11 @@ const Dashboard = () => {
               currentPage={shareHistoryPage}
               onPageChange={setShareHistoryPage}
               itemsPerPage={itemsPerPage}
+            />
+
+            {/* Видео обновления для инвесторов */}
+            <InvestorVideosSection
+              hasInvestments={totalPercentage > 0}
             />
           </div>
         </div>

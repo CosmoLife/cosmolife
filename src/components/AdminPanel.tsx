@@ -11,6 +11,7 @@ import { useProfile } from '@/contexts/ProfileContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import AdminVideoSection from '@/components/AdminVideoSection';
 
 const AdminPanel = () => {
   const { user } = useAuth();
@@ -399,11 +400,12 @@ const AdminPanel = () => {
       </h2>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="pending">Требуют подтверждения</TabsTrigger>
           <TabsTrigger value="share-requests">Заявки на продажу</TabsTrigger>
           <TabsTrigger value="users">Пользователи</TabsTrigger>
           <TabsTrigger value="investors">Инвесторы</TabsTrigger>
+          <TabsTrigger value="videos">Видео для инвесторов</TabsTrigger>
           <TabsTrigger value="settings">Настройки</TabsTrigger>
         </TabsList>
         
@@ -733,6 +735,10 @@ const AdminPanel = () => {
               );
             });
           })()}
+        </TabsContent>
+        
+        <TabsContent value="videos" className="space-y-4">
+          <AdminVideoSection />
         </TabsContent>
         
         <TabsContent value="settings" className="space-y-4">
