@@ -41,6 +41,16 @@ const Header = () => {
     }
   };
 
+  const handleGoToDayWithCosmo = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsMobileMenuOpen(false);
+    if (location.pathname !== '/') {
+      navigate('/#day-with-cosmo');
+    } else {
+      document.getElementById('day-with-cosmo')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const handleLogout = () => {
     setIsMobileMenuOpen(false);
     logout();
@@ -57,6 +67,7 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <a href="#" onClick={handleGoToHome} className="text-white hover:text-cosmo-blue transition-colors">Главная</a>
+          <a href="#day-with-cosmo" onClick={handleGoToDayWithCosmo} className="text-white hover:text-cosmo-blue transition-colors">День с Cosmo Life</a>
           <a href="#roadmap" onClick={handleGoToRoadmap} className="text-white hover:text-cosmo-blue transition-colors">Дорожная карта</a>
           {user ? (
             <>
@@ -100,6 +111,9 @@ const Header = () => {
           <div className="container mx-auto px-6 py-4 space-y-4">
             <a href="#" onClick={handleGoToHome} className="block text-white hover:text-cosmo-blue transition-colors py-2">
               Главная
+            </a>
+            <a href="#day-with-cosmo" onClick={handleGoToDayWithCosmo} className="block text-white hover:text-cosmo-blue transition-colors py-2">
+              День с Cosmo Life
             </a>
             <a href="#roadmap" onClick={handleGoToRoadmap} className="block text-white hover:text-cosmo-blue transition-colors py-2">
               Дорожная карта

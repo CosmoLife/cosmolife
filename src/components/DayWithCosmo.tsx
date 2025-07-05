@@ -1,6 +1,6 @@
 const DayWithCosmo = () => {
   return (
-    <section className="py-20 relative bg-gradient-to-b from-space-dark to-slate-900">
+    <section id="day-with-cosmo" className="py-20 relative bg-gradient-to-b from-space-dark to-slate-900">
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-cosmo-blue">
