@@ -153,6 +153,10 @@ const Dashboard = () => {
               potentialReturn={potentialReturn}
               totalReceivedIncome={totalReceivedIncome}
               onShowIncomeTransactions={() => setShowIncomeTransactions(true)}
+              onScrollToVideos={() => {
+                const videoSection = document.getElementById('investor-videos');
+                videoSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             />
 
             {/* Блок покупки доли (инвестирования) */}
@@ -186,9 +190,11 @@ const Dashboard = () => {
             />
 
             {/* Видео обновления для инвесторов */}
-            <InvestorVideosSection
-              hasInvestments={totalPercentage > 0}
-            />
+            <div id="investor-videos">
+              <InvestorVideosSection
+                hasInvestments={totalPercentage > 0}
+              />
+            </div>
           </div>
         </div>
       </section>

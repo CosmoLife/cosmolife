@@ -8,6 +8,7 @@ interface InvestmentStatsProps {
   potentialReturn: number;
   totalReceivedIncome: number;
   onShowIncomeTransactions: () => void;
+  onScrollToVideos?: () => void;
 }
 
 const InvestmentStats: React.FC<InvestmentStatsProps> = ({
@@ -16,16 +17,32 @@ const InvestmentStats: React.FC<InvestmentStatsProps> = ({
   yearlyReturn,
   potentialReturn,
   totalReceivedIncome,
-  onShowIncomeTransactions
+  onShowIncomeTransactions,
+  onScrollToVideos
 }) => {
   return (
     <div className="space-y-6 mb-12">
-      {totalPercentage > 0 && (
+      {totalPercentage > 0 ? (
         <div className="glass-premium rounded-2xl p-6 border border-cosmo-blue/30 text-center bg-cosmo-blue/5">
-          <h3 className="text-cosmo-blue font-bold mb-3 text-lg">📹 Эксклюзивные видео обновления</h3>
+          <h3 className="text-cosmo-blue font-bold mb-3 text-lg">📹 Эксклюзивные 
+            <span 
+              className="underline cursor-pointer hover:text-cosmo-purple transition-colors"
+              onClick={onScrollToVideos}
+            >
+              видео
+            </span> обновления
+          </h3>
           <p className="text-white/80 text-sm">
             Как инвестор с долей {totalPercentage.toFixed(4)}%, у вас есть доступ к закрытым видео о разработке Cosmo Life. 
             Узнавайте первыми о новых функциях и достижениях команды!
+          </p>
+        </div>
+      ) : (
+        <div className="glass-premium rounded-2xl p-6 border border-cosmo-green/30 text-center bg-cosmo-green/5">
+          <h3 className="text-cosmo-green font-bold mb-3 text-lg">🎬 Эксклюзивные видео ждут вас!</h3>
+          <p className="text-white/80 text-sm">
+            После приобретения доли в проекте вы получите доступ к закрытым видео о разработке Cosmo Life. 
+            Станьте частью команды и узнавайте о новых функциях первыми!
           </p>
         </div>
       )}

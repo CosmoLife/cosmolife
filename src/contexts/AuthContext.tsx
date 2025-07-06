@@ -73,9 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw error;
     }
     
-    if (data.user && !data.session) {
-      throw new Error('Пользователь с таким email уже зарегистрирован. Проверьте почту для подтверждения аккаунта или попробуйте войти в систему.');
-    }
+    // Регистрация успешна - не показываем ошибку, даже если сессии нет (это нормально для email подтверждения)
   };
 
   const logout = async () => {

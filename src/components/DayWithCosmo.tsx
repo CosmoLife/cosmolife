@@ -1,3 +1,11 @@
+import cosmoAutumn from "@/assets/cosmo-autumn-2025.jpg";
+import cosmoMorning from "@/assets/cosmo-morning.jpg";
+import cosmoBreakfast from "@/assets/cosmo-breakfast.jpg";
+import cosmoWork from "@/assets/cosmo-work.jpg";
+import cosmoDay from "@/assets/cosmo-day.jpg";
+import cosmoEvening from "@/assets/cosmo-evening.jpg";
+import cosmoNight from "@/assets/cosmo-night.jpg";
+
 const DayWithCosmo = () => {
   return (
     <section id="day-with-cosmo" className="py-20 relative bg-gradient-to-b from-space-dark to-slate-900">
@@ -9,6 +17,13 @@ const DayWithCosmo = () => {
           
           <div className="glass-premium p-8 rounded-3xl space-y-8">
             <div className="text-lg text-white/90 leading-relaxed">
+              <div className="mb-6 rounded-xl overflow-hidden">
+                <img 
+                  src={cosmoAutumn} 
+                  alt="Осень 2025 года - уютная квартира с панорамным окном" 
+                  className="w-full h-64 md:h-80 object-cover"
+                />
+              </div>
               <p className="mb-6">
                 <strong>Представь, осень 2025 года 🍂</strong><br/>
                 Золотая листва кружит за окном, ты просыпаешься в своей уютной квартире, а твой смартфон оживает мягким, дружеским голосом Cosmo Life — твоего ИИ-ассистента, который знает тебя как лучший друг. 😊 Это не просто приложение, а суперсервис будущего, объединяющий всё: от заказа еды до работы и отдыха. Cosmo Life живёт в твоём телефоне, в мессенджерах, а если нацепишь AR-очки — он там, с дополненной реальностью, и уже готовится к VR в зарождающейся метавселенной. 🌌 Это проактивный голосовой нейроинтерфейс: он изучает твои привычки, но действует только с твоего разрешения, автоматизируя то, что ты одобрил. Всё интуитивно, как болтовня с другом. Пойдём по твоему дню, чтобы ты почувствовал, как Cosmo Life делает жизнь ярче и проще! 🎉
@@ -17,6 +32,13 @@ const DayWithCosmo = () => {
 
             <div className="grid gap-8">
               <div className="bg-white/5 rounded-xl p-6">
+                <div className="mb-4 rounded-lg overflow-hidden">
+                  <img 
+                    src={cosmoMorning} 
+                    alt="Утро - человек просыпается с уведомлением о кофе" 
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
                 <h3 className="text-2xl font-bold text-cosmo-green mb-4">Утро ☀️</h3>
                 <p className="text-white/80 leading-relaxed mb-4">
                   Ты встаёшь в 7:30, и Cosmo Life, зная твою любовь к утреннему кофе, говорит нежным голосом:<br/>
@@ -31,6 +53,13 @@ const DayWithCosmo = () => {
               </div>
 
               <div className="bg-white/5 rounded-xl p-6">
+                <div className="mb-4 rounded-lg overflow-hidden">
+                  <img 
+                    src={cosmoBreakfast} 
+                    alt="Завтрак - кухня с продуктами и кроссовками на экране" 
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
                 <h3 className="text-2xl font-bold text-cosmo-purple mb-4">Завтрак 🍳</h3>
                 <p className="text-white/80 leading-relaxed mb-4">
                   Думаешь про еду? Cosmo Life предлагает:<br/>
@@ -44,6 +73,13 @@ const DayWithCosmo = () => {
               </div>
 
               <div className="bg-white/5 rounded-xl p-6">
+                <div className="mb-4 rounded-lg overflow-hidden">
+                  <img 
+                    src={cosmoWork} 
+                    alt="Работа - офис с презентацией и фриланс проектами" 
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
                 <h3 className="text-2xl font-bold text-cosmo-blue mb-4">Работа 💼</h3>
                 <p className="text-white/80 leading-relaxed mb-4">
                   В офисе нужно написать коллегам. Cosmo Life говорит:<br/>
@@ -59,6 +95,13 @@ const DayWithCosmo = () => {
               </div>
 
               <div className="bg-white/5 rounded-xl p-6">
+                <div className="mb-4 rounded-lg overflow-hidden">
+                  <img 
+                    src={cosmoDay} 
+                    alt="День - сантехник и голографическая карта" 
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
                 <h3 className="text-2xl font-bold text-cosmo-green mb-4">День 🛠️</h3>
                 <p className="text-white/80 leading-relaxed">
                   Дома потёк кран. Ты говоришь: "Cosmo Life, найди сантехника!"<br/>
@@ -68,6 +111,13 @@ const DayWithCosmo = () => {
               </div>
 
               <div className="bg-white/5 rounded-xl p-6">
+                <div className="mb-4 rounded-lg overflow-hidden">  
+                  <img 
+                    src={cosmoEvening} 
+                    alt="Вечер - ресторан с AR-очками и дождем" 
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
                 <h3 className="text-2xl font-bold text-cosmo-purple mb-4">Вечер 🎶</h3>
                 <p className="text-white/80 leading-relaxed mb-4">
                   Пора расслабиться. Cosmo Life говорит:<br/>
@@ -84,6 +134,13 @@ const DayWithCosmo = () => {
               </div>
 
               <div className="bg-white/5 rounded-xl p-6">
+                <div className="mb-4 rounded-lg overflow-hidden">
+                  <img 
+                    src={cosmoNight} 
+                    alt="Конец дня - гостиная с пиццей и ТВ" 
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
                 <h3 className="text-2xl font-bold text-cosmo-blue mb-4">Конец дня 🌙</h3>
                 <p className="text-white/80 leading-relaxed mb-4">
                   Дома ты хочешь расслабиться. Cosmo Life говорит:<br/>
