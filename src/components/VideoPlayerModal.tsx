@@ -13,7 +13,7 @@ interface VideoPlayerModalProps {
 const VideoPlayerModal = ({ isOpen, onClose, videoUrl, title, description }: VideoPlayerModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] w-full max-h-[90vh] p-0 bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 overflow-hidden flex flex-col">
+      <DialogContent className="max-w-[95vw] w-full max-h-[95vh] p-0 bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 overflow-hidden flex flex-col">
         <DialogHeader className="p-6 pb-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-2xl font-bold text-white">
@@ -33,7 +33,7 @@ const VideoPlayerModal = ({ isOpen, onClose, videoUrl, title, description }: Vid
           )}
         </DialogHeader>
         
-        <div className="flex-1 p-3 md:p-6 pt-2 md:pt-4 min-h-0 flex items-center justify-center">
+        <div className="flex-1 p-2 md:p-4 pt-1 md:pt-2 pb-2 min-h-0 flex items-center justify-center">
           <div className="relative w-full h-full max-w-sm mx-auto">
             <video
               src={videoUrl}
