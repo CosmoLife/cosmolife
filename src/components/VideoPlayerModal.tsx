@@ -38,12 +38,12 @@ const VideoPlayerModal = ({ isOpen, onClose, videoUrl, title, description }: Vid
             <video
               src={videoUrl}
               controls
-              className="max-w-full max-h-full object-contain"
+              className="w-full h-full object-contain"
               controlsList="nodownload"
               preload="auto"
               playsInline
               webkit-playsinline="true"
-              style={{ width: 'auto', height: 'auto' }}
+              style={{ maxWidth: '100%', maxHeight: '100%' }}
               onError={(e) => {
                 console.error('Video playback error:', e);
               }}
