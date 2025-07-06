@@ -1,6 +1,18 @@
 import cosmoAutumn from "@/assets/cosmo-autumn-2025.jpg";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const DayWithCosmo = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handlePersonalCabinetClick = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/login');
+    }
+  };
   return (
     <section id="day-with-cosmo" className="py-20 relative bg-gradient-to-b from-space-dark to-slate-900">
       <div className="container mx-auto px-6 relative z-10">
@@ -102,6 +114,16 @@ const DayWithCosmo = () => {
                 </p>
                 <p className="text-white/80 leading-relaxed font-medium text-cosmo-green">
                   Cosmo Life закрывает все твои потребности: еда, транспорт, покупки, работа, общение, досуг. Он не просто автоматизирует, а делает жизнь ярче, как будто у тебя есть друг, который всегда на шаг впереди, но ждёт твоего слова. 😊
+                </p>
+                <p className="text-white/80 leading-relaxed mt-4 text-center">
+                  🎬 Эксклюзивные видео ждут вас в{' '}
+                  <button 
+                    onClick={handlePersonalCabinetClick}
+                    className="text-cosmo-blue hover:text-cosmo-purple transition-colors underline cursor-pointer"
+                  >
+                    личном кабинете
+                  </button>
+                  !
                 </p>
               </div>
             </div>
