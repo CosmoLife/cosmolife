@@ -33,17 +33,17 @@ const VideoPlayerModal = ({ isOpen, onClose, videoUrl, title, description }: Vid
           )}
         </DialogHeader>
         
-        <div className="flex-1 p-3 md:p-6 pt-2 md:pt-4 min-h-0">
-          <div className="w-full h-full rounded-lg overflow-hidden bg-black flex items-center justify-center">
+        <div className="flex-1 p-3 md:p-6 pt-2 md:pt-4 min-h-0 flex items-center justify-center">
+          <div className="relative w-full h-full max-w-sm mx-auto">
             <video
               src={videoUrl}
               controls
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain bg-black rounded-lg"
               controlsList="nodownload"
               preload="auto"
               playsInline
               webkit-playsinline="true"
-              style={{ maxWidth: '100%', maxHeight: '100%' }}
+              style={{ aspectRatio: '9/16' }}
               onError={(e) => {
                 console.error('Video playback error:', e);
               }}
