@@ -66,7 +66,7 @@ const InvestorVideosSection = ({ hasInvestments }: InvestorVideosSectionProps) =
             Видео обновления по проекту
           </CardTitle>
           <CardDescription className="text-white/70">
-            Эксклюзивные видео о ходе разработки Cosmo Life для наших инвесторов. 
+            Эксклюзивные видео о ходе разработки VINNI для наших инвесторов. 
             Узнавайте первыми о новых функциях, достижениях команды и планах развития проекта.
           </CardDescription>
         </CardHeader>
