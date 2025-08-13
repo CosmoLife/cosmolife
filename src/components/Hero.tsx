@@ -17,7 +17,7 @@ const Hero = () => {
       <div className="container mx-auto px-6 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-bold mb-8 holo-text">
-            COSMO LIFE
+            VINNI
           </h1>
           
           <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
@@ -27,7 +27,7 @@ const Hero = () => {
           
           <div className="glass-premium neuro-card quantum-particle magnetic-element p-8 mb-8">
             <p className="text-lg text-white/80 mb-6">
-              Cosmo Life — это суперприложение в Telegram, App Store и Google Play, уже на{' '}
+              VINNI — это суперприложение в Telegram, App Store и Google Play, уже на{' '}
               <span className="text-cosmo-blue font-bold">99% готово к запуску</span> на весь мир, 
               включая РФ, Америку, Азию, Европу и СНГ.
             </p>

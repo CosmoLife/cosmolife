@@ -50,7 +50,7 @@ const About = () => {
           
           <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-3xl p-8 neon-border">
             <h3 className="text-3xl font-bold text-center mb-8 text-cosmo-blue neon-text">
-              Прогнозируемая доходность Cosmo Life
+              Прогнозируемая доходность VINNI
             </h3>
             
             <div className="grid md:grid-cols-3 gap-6 mb-8">

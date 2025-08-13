@@ -61,13 +61,13 @@ const Header = () => {
     <header className="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3">
-          <span className="text-2xl font-bold text-white neon-text">COSMO</span>
+          <img src="/lovable-uploads/19d16815-6846-4c4a-8344-c1869b3b53fb.png" alt="VINNI" className="h-10 w-auto" />
         </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <a href="#" onClick={handleGoToHome} className="text-white hover:text-cosmo-blue transition-colors">Главная</a>
-          <a href="#day-with-cosmo" onClick={handleGoToDayWithCosmo} className="text-white hover:text-cosmo-blue transition-colors">День с Cosmo Life</a>
+          <a href="#day-with-cosmo" onClick={handleGoToDayWithCosmo} className="text-white hover:text-cosmo-blue transition-colors">День с VINNI</a>
           <a href="#roadmap" onClick={handleGoToRoadmap} className="text-white hover:text-cosmo-blue transition-colors">Дорожная карта</a>
           {user ? (
             <>
@@ -113,7 +113,7 @@ const Header = () => {
               Главная
             </a>
             <a href="#day-with-cosmo" onClick={handleGoToDayWithCosmo} className="block text-white hover:text-cosmo-blue transition-colors py-2">
-              День с Cosmo Life
+              День с VINNI
             </a>
             <a href="#roadmap" onClick={handleGoToRoadmap} className="block text-white hover:text-cosmo-blue transition-colors py-2">
               Дорожная карта
