@@ -38,14 +38,6 @@ interface InvestorVideo {
   created_by?: string;
 }
 
-interface AdminEmail {
-  id: string;
-  email: string;
-  is_active: boolean;
-  created_at: string;
-  created_by?: string;
-}
-
 interface AdminContextType {
   getAllInvestments: () => Promise<Investment[]>;
   updateInvestmentStatus: (id: string, status: Investment['status'], adminNotes?: string) => Promise<void>;
@@ -58,10 +50,6 @@ interface AdminContextType {
   uploadInvestorVideo: (file: File, title: string, description?: string) => Promise<void>;
   updateVideoStatus: (id: string, isActive: boolean) => Promise<void>;
   deleteInvestorVideo: (id: string) => Promise<void>;
-  getAllAdminEmails: () => Promise<AdminEmail[]>;
-  addAdminEmail: (email: string) => Promise<void>;
-  updateAdminEmailStatus: (id: string, isActive: boolean) => Promise<void>;
-  deleteAdminEmail: (id: string) => Promise<void>;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -251,45 +239,6 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (dbError) throw dbError;
   };
 
-  const getAllAdminEmails = async (): Promise<AdminEmail[]> => {
-    const { data, error } = await supabase
-      .from('admin_emails')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data || [];
-  };
-
-  const addAdminEmail = async (email: string) => {
-    const { error } = await supabase
-      .from('admin_emails')
-      .insert({
-        email,
-        created_by: user?.id
-      });
-
-    if (error) throw error;
-  };
-
-  const updateAdminEmailStatus = async (id: string, isActive: boolean) => {
-    const { error } = await supabase
-      .from('admin_emails')
-      .update({ is_active: isActive })
-      .eq('id', id);
-
-    if (error) throw error;
-  };
-
-  const deleteAdminEmail = async (id: string) => {
-    const { error } = await supabase
-      .from('admin_emails')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
-  };
-
   return (
     <AdminContext.Provider value={{
       getAllInvestments,
@@ -302,11 +251,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       getAllInvestorVideos,
       uploadInvestorVideo,
       updateVideoStatus,
-      deleteInvestorVideo,
-      getAllAdminEmails,
-      addAdminEmail,
-      updateAdminEmailStatus,
-      deleteAdminEmail
+      deleteInvestorVideo
     }}>
       {children}
     </AdminContext.Provider>

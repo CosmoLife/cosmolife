@@ -1,4 +1,1 @@
 project_id = "kesiglejxnnnxfovfetm"
-
-[functions.notify-admins]
-verify_jwt = false
