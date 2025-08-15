@@ -145,18 +145,13 @@ export const InvestmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const addInvestment = async (amount: number, paymentMethod: Investment['payment_method']) => {
-    console.log('InvestmentContext: addInvestment called with:', { amount, paymentMethod, userId: user?.id });
-    
     if (!user) {
-      console.error('InvestmentContext: No user found');
       throw new Error('User not authenticated');
     }
     
     const percentage = (amount / 5000000) * 100;
-    console.log('InvestmentContext: calculated percentage:', percentage);
     
     try {
-      console.log('InvestmentContext: inserting investment into database...');
       const { error } = await supabase
         .from('investments')
         .insert({
@@ -168,15 +163,13 @@ export const InvestmentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         });
 
       if (error) {
-        console.error('InvestmentContext: database error:', error);
+        console.error('Database error:', error);
         throw error;
       }
 
-      console.log('InvestmentContext: investment inserted successfully, loading investments...');
       await loadUserInvestments(user.id);
-      console.log('InvestmentContext: addInvestment completed successfully');
     } catch (error) {
-      console.error('InvestmentContext: error in addInvestment:', error);
+      console.error('Error in addInvestment:', error);
       throw error;
     }
   };
