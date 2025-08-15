@@ -53,9 +53,17 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
   };
 
   const handleInvestment = (paymentMethod: 'yoomoney' | 'usdt' | 'card') => {
-    onInvestment(investmentAmount, paymentMethod);
-    onShowPayment(false);
-    setInvestmentAmount(50000);
+    console.log('InvestmentForm: handleInvestment called with method:', paymentMethod);
+    console.log('InvestmentForm: investment amount:', investmentAmount);
+    
+    try {
+      onInvestment(investmentAmount, paymentMethod);
+      onShowPayment(false);
+      setInvestmentAmount(50000);
+      console.log('InvestmentForm: investment flow completed successfully');
+    } catch (error) {
+      console.error('InvestmentForm: error in handleInvestment:', error);
+    }
   };
 
   return (

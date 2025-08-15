@@ -71,7 +71,10 @@ const Dashboard = () => {
   const paginatedShareRequests = shareSaleRequests.slice(startShareIndex, startShareIndex + itemsPerPage);
 
   const handleInvestment = async (investmentAmount: number, paymentMethod: 'yoomoney' | 'usdt' | 'card') => {
+    console.log('Dashboard: handleInvestment called with:', { investmentAmount, paymentMethod });
+    
     if (investmentAmount < 50000) {
+      console.log('Dashboard: investment amount too low:', investmentAmount);
       toast({
         title: "Ошибка",
         description: "Минимальная сумма инвестиций 50,000 рублей",
@@ -80,24 +83,39 @@ const Dashboard = () => {
       return;
     }
 
-    await addInvestment(investmentAmount, paymentMethod);
-    
-    switch (paymentMethod) {
-      case 'yoomoney':
-        window.open(`https://yoomoney.ru/to/410019220622751/${investmentAmount}`, '_blank');
-        break;
-      case 'usdt':
-        // Показываем адрес кошелька
-        break;
-      case 'card':
-        // Открываем Telegram или WhatsApp для запроса данных карты
-        break;
+    try {
+      console.log('Dashboard: calling addInvestment...');
+      await addInvestment(investmentAmount, paymentMethod);
+      console.log('Dashboard: addInvestment completed successfully');
+      
+      switch (paymentMethod) {
+        case 'yoomoney':
+          console.log('Dashboard: opening YooMoney link');
+          window.open(`https://yoomoney.ru/to/410019220622751/${investmentAmount}`, '_blank');
+          break;
+        case 'usdt':
+          console.log('Dashboard: USDT payment selected - showing address');
+          // Показываем адрес кошелька
+          break;
+        case 'card':
+          console.log('Dashboard: card payment selected');
+          // Открываем Telegram или WhatsApp для запроса данных карты
+          break;
+      }
+      
+      toast({
+        title: "Инвестиция создана!",
+        description: "Следуйте инструкциям для оплаты. После оплаты загрузите подтверждение.",
+      });
+      console.log('Dashboard: investment flow completed successfully');
+    } catch (error) {
+      console.error('Dashboard: error in handleInvestment:', error);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось создать инвестицию. Попробуйте еще раз.",
+        variant: "destructive"
+      });
     }
-    
-    toast({
-      title: "Инвестиция создана!",
-      description: "Следуйте инструкциям для оплаты. После оплаты загрузите подтверждение.",
-    });
   };
 
   const handleShareSale = () => {
