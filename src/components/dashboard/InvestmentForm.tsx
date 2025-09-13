@@ -213,11 +213,11 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
                        В Telegram
                      </Button>
                    </a>
-                   <a 
-                     href="https://wa.me/79635124265" 
-                     target="_blank" 
-                     rel="noopener noreferrer"
-                   >
+                    <a 
+                      href="https://wa.me/79336702070" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
                      <Button className="bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white w-full rounded-xl py-3 font-bold transition-all duration-300 hover:scale-105">
                        В WhatsApp
                      </Button>

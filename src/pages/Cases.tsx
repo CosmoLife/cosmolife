@@ -201,7 +201,7 @@ const Cases = () => {
               </a>
               
               <a 
-                href="https://wa.me/79635124265" 
+                href="https://wa.me/79336702070" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-block"
