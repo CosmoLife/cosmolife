@@ -137,7 +137,7 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
                   <div>
                     <span className="font-bold text-purple-300 text-xl cyber-text">ЮMoney</span>
                     <p className="text-sm text-white/80 mt-2 font-medium">
-                      (С банковских карт российских банков 100 000 ₽/операция. Не более 600 000 ₽/сутки)
+                      (С банковских карт российских банков 15 000 ₽/операция. Не более 600 000 ₽/сутки)
                     </p>
                   </div>
                   <Button
