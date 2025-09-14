@@ -131,24 +131,6 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
                 Способы оплаты
               </h3>
               
-              {/* ЮMoney */}
-              <div className="glass-premium neuro-card rounded-2xl p-6 border border-purple-500/30 magnetic-element transition-all duration-300 hover:scale-[1.02]">
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <span className="font-bold text-purple-300 text-xl cyber-text">ЮMoney</span>
-                    <p className="text-sm text-white/80 mt-2 font-medium">
-                      (С банковских карт российских банков 15 000 ₽/операция. Не более 600 000 ₽/сутки)
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => handleInvestment('yoomoney')}
-                    className="bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-xl px-8 py-3 font-bold transition-all duration-300 hover:scale-105 animate-neural-glow"
-                  >
-                    Оплатить
-                  </Button>
-                </div>
-              </div>
-              
               {/* USDT */}
               <div className="glass-premium neuro-card rounded-2xl p-6 border border-green-500/30 magnetic-element transition-all duration-300 hover:scale-[1.02]">
                 <div className="flex justify-between items-center mb-4">
