@@ -187,7 +187,7 @@ const AdminPanel = () => {
         ...profile,
         totalInvestment: investorMap.get(profile.id)?.totalAmount || 0,
         totalIncome: incomeMap.get(profile.id) || 0,
-        sharePercentage: ((investorMap.get(profile.id)?.totalAmount || 0) * 0.01 / 50000).toFixed(4)
+        sharePercentage: ((investorMap.get(profile.id)?.totalAmount || 0) * 0.01 / 100000).toFixed(4)
       }));
     } catch (error) {
       console.error('Error loading investors:', error);
@@ -451,7 +451,7 @@ const AdminPanel = () => {
                     <p className="text-white"><strong>Пользователь:</strong> {userProfile?.full_name || 'Не указано'}</p>
                     <p className="text-white"><strong>Email:</strong> {userProfile?.email || 'Не указано'}</p>
                     <p className="text-white"><strong>Сумма:</strong> {investment.amount?.toLocaleString()} ₽</p>
-                    <p className="text-white"><strong>Доля:</strong> {(investment.amount * 0.01 / 50000).toFixed(4)}%</p>
+                    <p className="text-white"><strong>Доля:</strong> {(investment.amount * 0.01 / 100000).toFixed(4)}%</p>
                     <p className="text-white"><strong>Способ оплаты:</strong> {investment.payment_method}</p>
                     {(investment.transaction_hash || paymentConfirmation?.transaction_hash) && (
                       <p className="text-white"><strong>Хэш транзакции:</strong> {investment.transaction_hash || paymentConfirmation?.transaction_hash}</p>

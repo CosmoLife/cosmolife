@@ -16,7 +16,7 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
   onShowPayment,
   onInvestment
 }) => {
-  const [investmentAmount, setInvestmentAmount] = useState(50000);
+  const [investmentAmount, setInvestmentAmount] = useState(100000);
   const [usdtRate, setUsdtRate] = useState<number | null>(null);
   const [loadingRate, setLoadingRate] = useState(false);
   const { toast } = useToast();
@@ -55,7 +55,7 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
   const handleInvestment = (paymentMethod: 'yoomoney' | 'usdt' | 'card') => {
     onInvestment(investmentAmount, paymentMethod);
     onShowPayment(false);
-    setInvestmentAmount(50000);
+    setInvestmentAmount(100000);
   };
 
   return (
@@ -109,19 +109,19 @@ const InvestmentForm: React.FC<InvestmentFormProps> = ({
           <div className="max-w-3xl mx-auto space-y-8">
             <div className="glass-premium rounded-2xl p-8 border border-white/10">
               <Label htmlFor="amount" className="text-white mb-4 block text-xl font-bold">
-                Сумма инвестиций (от 50,000 ₽)
+                Сумма инвестиций (от 100,000 ₽)
               </Label>
               <Input
                 id="amount"
                 type="number"
-                min="50000"
+                min="100000"
                 step="1000"
                 value={investmentAmount}
                 onChange={(e) => setInvestmentAmount(Number(e.target.value))}
                 className="bg-white/10 border-white/20 text-white text-xl h-14 rounded-xl transition-colors duration-200 focus:border-quantum-flux focus:ring-2 focus:ring-quantum-flux/20"
               />
               <p className="text-lg text-quantum-flux mt-3 font-bold">
-                Доля: {(investmentAmount * 0.01 / 50000).toFixed(4)}%
+                Доля: {(investmentAmount * 0.01 / 100000).toFixed(4)}%
               </p>
             </div>
             
