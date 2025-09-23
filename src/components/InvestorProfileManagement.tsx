@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Edit, TrendingUp, DollarSign } from 'lucide-react';
+import { Edit, TrendingUp, DollarSign, Trash2 } from 'lucide-react';
 
 interface InvestorProfile {
   id: string;
@@ -149,6 +149,35 @@ const InvestorProfileManagement: React.FC<InvestorProfileManagementProps> = ({ i
       toast({
         title: "Ошибка",
         description: "Не удалось изменить статус инвестора",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteInvestor = async (investorId: string, investorName: string) => {
+    if (!confirm(`Вы уверены, что хотите удалить инвестора "${investorName}"? Это действие нельзя отменить и удалит все связанные инвестиции и данные.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', investorId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Инвестор удален",
+        description: "Инвестор успешно удален из системы",
+      });
+
+      onInvestorUpdated();
+    } catch (error) {
+      console.error('Error deleting investor:', error);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось удалить инвестора",
         variant: "destructive"
       });
     }
@@ -412,6 +441,16 @@ const InvestorProfileManagement: React.FC<InvestorProfileManagementProps> = ({ i
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               {investor.status === 'suspended' ? 'Разблокировать' : 'Заблокировать'}
+            </Button>
+            
+            <Button
+              onClick={() => handleDeleteInvestor(investor.id, investor.full_name || investor.email)}
+              variant="destructive"
+              size="sm"
+              className="bg-red-800 hover:bg-red-900 text-white"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Удалить
             </Button>
           </div>
         </div>
