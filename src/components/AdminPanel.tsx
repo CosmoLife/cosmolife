@@ -13,6 +13,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import AdminVideoSection from '@/components/AdminVideoSection';
 import AdminEmailsSection from '@/components/AdminEmailsSection';
+import UserProfileManagement from '@/components/UserProfileManagement';
+import InvestorProfileManagement from '@/components/InvestorProfileManagement';
 
 const AdminPanel = () => {
   const { user } = useAuth();
@@ -593,150 +595,11 @@ const AdminPanel = () => {
         </TabsContent>
 
         <TabsContent value="users" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold text-white">Зарегистрированные пользователи ({allUsers.length})</h3>
-            {allUsers.length > itemsPerPage && (
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => setUsersPage(prev => Math.max(prev - 1, 1))}
-                  disabled={usersPage === 1}
-                  variant="outline"
-                  size="sm"
-                  className="border-white/20 text-white"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <span className="text-white text-sm">
-                  {usersPage} из {Math.ceil(allUsers.length / itemsPerPage)}
-                </span>
-                <Button
-                  onClick={() => setUsersPage(prev => Math.min(prev + 1, Math.ceil(allUsers.length / itemsPerPage)))}
-                  disabled={usersPage === Math.ceil(allUsers.length / itemsPerPage)}
-                  variant="outline"
-                  size="sm"
-                  className="border-white/20 text-white"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-          </div>
-          <p className="text-white/60 mb-4">Пользователи, которые зарегистрировались, но еще не стали активными инвесторами</p>
-          {(() => {
-            const usersStartIndex = (usersPage - 1) * itemsPerPage;
-            const paginatedUsers = allUsers.slice(usersStartIndex, usersStartIndex + itemsPerPage);
-            return paginatedUsers.map((user) => (
-              <div key={user.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-white"><strong>Имя:</strong> {user.full_name || 'Не указано'}</p>
-                    <p className="text-white"><strong>Телефон:</strong> {user.phone || 'Не указано'}</p>
-                    <p className="text-white"><strong>Адрес:</strong> {user.address || 'Не указан'}</p>
-                    <p className="text-white"><strong>Дата рождения:</strong> {user.birth_date || 'Не указана'}</p>
-                  </div>
-                  <div>
-                    <p className="text-white"><strong>Telegram:</strong> {user.telegram_username || 'Не указан'}</p>
-                    <p className="text-white"><strong>WhatsApp:</strong> {user.whatsapp_number || 'Не указан'}</p>
-                    <p className="text-white"><strong>USDT кошелек:</strong> {user.usdt_wallet || 'Не указан'}</p>
-                    <p className="text-white"><strong>Дата регистрации:</strong> {new Date(user.created_at).toLocaleDateString('ru-RU')}</p>
-                  </div>
-                </div>
-              </div>
-            ));
-          })()}
+          <UserProfileManagement users={allUsers} onUserUpdated={loadData} />
         </TabsContent>
 
         <TabsContent value="investors" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold text-white">Активные инвесторы ({investors.length})</h3>
-            {investors.length > itemsPerPage && (
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => setInvestorsPage(prev => Math.max(prev - 1, 1))}
-                  disabled={investorsPage === 1}
-                  variant="outline"
-                  size="sm"
-                  className="border-white/20 text-white"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <span className="text-white text-sm">
-                  {investorsPage} из {Math.ceil(investors.length / itemsPerPage)}
-                </span>
-                <Button
-                  onClick={() => setInvestorsPage(prev => Math.min(prev + 1, Math.ceil(investors.length / itemsPerPage)))}
-                  disabled={investorsPage === Math.ceil(investors.length / itemsPerPage)}
-                  variant="outline"
-                  size="sm"
-                  className="border-white/20 text-white"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-          </div>
-          <p className="text-white/60 mb-4">Пользователи с активными инвестициями</p>
-          {(() => {
-            const investorsStartIndex = (investorsPage - 1) * itemsPerPage;
-            const paginatedInvestors = investors.slice(investorsStartIndex, investorsStartIndex + itemsPerPage);
-            return paginatedInvestors.map((investor) => {
-              const incomeChanges = investorIncomeChanges[investor.id] || { income: 0, hash: '' };
-              
-              return (
-                <div key={investor.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-white"><strong>Имя:</strong> {investor.full_name || 'Не указано'}</p>
-                      <p className="text-white"><strong>Телефон:</strong> {investor.phone || 'Не указано'}</p>
-                      <p className="text-white"><strong>Адрес:</strong> {investor.address || 'Не указан'}</p>
-                      <p className="text-white"><strong>Дата рождения:</strong> {investor.birth_date || 'Не указана'}</p>
-                      <p className="text-white"><strong>Общая сумма инвестиций:</strong> {investor.totalInvestment?.toLocaleString()} ₽</p>
-                      <p className="text-white"><strong>Доля:</strong> {investor.sharePercentage}%</p>
-                      <p className="text-white"><strong>Текущий доход:</strong> {investor.totalIncome?.toLocaleString()} ₽</p>
-                    </div>
-                    <div>
-                      <p className="text-white"><strong>Telegram:</strong> {investor.telegram_username || 'Не указан'}</p>
-                      <p className="text-white"><strong>WhatsApp:</strong> {investor.whatsapp_number || 'Не указан'}</p>
-                      <p className="text-white"><strong>USDT кошелек:</strong> {investor.usdt_wallet || 'Не указан'}</p>
-                      <p className="text-white"><strong>Дата регистрации:</strong> {new Date(investor.created_at).toLocaleDateString('ru-RU')}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-white/5 rounded-lg">
-                    <div>
-                      <Label className="text-white mb-2 block">Начислить доход (₽)</Label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={incomeChanges.income}
-                        onChange={(e) => updateInvestorIncomeChange(investor.id, 'income', Number(e.target.value))}
-                        className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
-                        placeholder="Сумма дохода"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-white mb-2 block">Хэш перевода</Label>
-                      <Input
-                        type="text"
-                        value={incomeChanges.hash}
-                        onChange={(e) => updateInvestorIncomeChange(investor.id, 'hash', e.target.value)}
-                        className="bg-slate-700 border-slate-600 text-white focus:border-cosmo-blue"
-                        placeholder="Хэш транзакции"
-                      />
-                    </div>
-                  </div>
-                  
-                  <Button
-                    onClick={() => handleInvestorIncomeUpdate(investor.id)}
-                    disabled={!incomeChanges.income || !incomeChanges.hash}
-                    className="bg-cosmo-green hover:bg-cosmo-blue text-white"
-                  >
-                    Начислить доход
-                  </Button>
-                </div>
-              );
-            });
-          })()}
+          <InvestorProfileManagement investors={investors} onInvestorUpdated={loadData} />
         </TabsContent>
         
         <TabsContent value="videos" className="space-y-4">
