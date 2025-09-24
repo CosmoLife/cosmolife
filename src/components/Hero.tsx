@@ -23,7 +23,7 @@ const Hero = () => {
           
           <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
             Инвестируй, как умные деньги, но с минимальным порогом входа всего от{' '}
-            <span className="cyber-text">100,000 рублей!</span>
+            <span className="cyber-text">50,000 рублей!</span>
           </p>
           
           <div className="glass-premium neuro-card quantum-particle magnetic-element p-8 mb-8">
