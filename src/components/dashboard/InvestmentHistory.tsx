@@ -81,7 +81,7 @@ const InvestmentHistory: React.FC<InvestmentHistoryProps> = ({
                     {investment.amount.toLocaleString()} ₽
                   </div>
                   <div className="text-sm text-white/60">
-                    Доля: {(investment.amount * 0.01 / 50000).toFixed(4)}% • {' '}
+                    Доля: {(investment.amount * 0.01 / 100000).toFixed(4)}% • {' '}
                     {new Date(investment.created_at).toLocaleDateString('ru-RU')}
                   </div>
                   {investment.payment_method && (
