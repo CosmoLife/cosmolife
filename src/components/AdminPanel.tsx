@@ -134,7 +134,7 @@ const AdminPanel = () => {
     try {
       const { data: investmentsData, error: investmentsError } = await supabase
         .from('investments')
-        .select('user_id, amount')
+        .select('user_id, amount, percentage')
         .eq('status', 'active');
       
       if (investmentsError) throw investmentsError;
@@ -145,10 +145,12 @@ const AdminPanel = () => {
         const existing = investorMap.get(inv.user_id);
         if (existing) {
           existing.totalAmount += inv.amount;
+          existing.totalPercentage += inv.percentage;
         } else {
           investorMap.set(inv.user_id, {
             user_id: inv.user_id,
-            totalAmount: inv.amount
+            totalAmount: inv.amount,
+            totalPercentage: inv.percentage
           });
         }
       });
@@ -189,7 +191,7 @@ const AdminPanel = () => {
         ...profile,
         totalInvestment: investorMap.get(profile.id)?.totalAmount || 0,
         totalIncome: incomeMap.get(profile.id) || 0,
-        sharePercentage: ((investorMap.get(profile.id)?.totalAmount || 0) * 0.01 / 100000).toFixed(4)
+        sharePercentage: (investorMap.get(profile.id)?.totalPercentage || 0).toFixed(4)
       }));
     } catch (error) {
       console.error('Error loading investors:', error);
