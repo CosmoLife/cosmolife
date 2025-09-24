@@ -51,8 +51,8 @@ const Dashboard = () => {
   // Считаем только оплаченные инвестиции (статус 'paid' или 'active')
   const paidInvestments = investments.filter(inv => inv.status === 'paid' || inv.status === 'active');
   const totalInvestment = paidInvestments.reduce((sum, inv) => sum + inv.amount, 0);
-  // ИСПРАВЛЕННАЯ ФОРМУЛА: каждые 100,000 рублей = 0.01%
-  const totalPercentage = totalInvestment * 0.01 / 100000;
+  // ИСПРАВЛЕННАЯ ФОРМУЛА: каждые 50,000 рублей = 0.01%
+  const totalPercentage = totalInvestment * 0.01 / 50000;
   const totalReceivedIncome = incomeTransactions.reduce((sum, t) => sum + t.amount, 0);
   const yearlyReturn = totalPercentage * 357600000 / 100;
   const potentialReturn = totalPercentage * 178800000000 / 100;
@@ -71,10 +71,10 @@ const Dashboard = () => {
   const paginatedShareRequests = shareSaleRequests.slice(startShareIndex, startShareIndex + itemsPerPage);
 
   const handleInvestment = async (investmentAmount: number, paymentMethod: 'yoomoney' | 'usdt' | 'card') => {
-    if (investmentAmount < 100000) {
+    if (investmentAmount < 50000) {
       toast({
         title: "Ошибка",
-        description: "Минимальная сумма инвестиций 100,000 рублей",
+        description: "Минимальная сумма инвестиций 50,000 рублей",
         variant: "destructive"
       });
       return;
