@@ -18,6 +18,7 @@ import InvestmentHistory from '@/components/dashboard/InvestmentHistory';
 import ShareSaleSection from '@/components/dashboard/ShareSaleSection';
 import ShareSaleHistory from '@/components/dashboard/ShareSaleHistory';
 import InvestorVideosSection from '@/components/dashboard/InvestorVideosSection';
+import { TrafficAnalytics } from '@/components/dashboard/TrafficAnalytics';
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
@@ -167,6 +168,9 @@ const Dashboard = () => {
                 videoSection?.scrollIntoView({ behavior: 'smooth' });
               }}
             />
+
+            {/* Аналитика трафика - показываем только инвесторам */}
+            {totalPercentage > 0 && <TrafficAnalytics />}
 
             {/* Блок покупки доли (инвестирования) */}
             <InvestmentForm

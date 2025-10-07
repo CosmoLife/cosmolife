@@ -326,6 +326,45 @@ export type Database = {
         }
         Relationships: []
       }
+      traffic_analytics: {
+        Row: {
+          active_users: number
+          created_at: string
+          created_by: string | null
+          date: string
+          id: string
+          new_registrations: number
+          platform: string
+          super_app_conversions: number
+          total_users: number
+          updated_at: string
+        }
+        Insert: {
+          active_users?: number
+          created_at?: string
+          created_by?: string | null
+          date: string
+          id?: string
+          new_registrations?: number
+          platform: string
+          super_app_conversions?: number
+          total_users?: number
+          updated_at?: string
+        }
+        Update: {
+          active_users?: number
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          id?: string
+          new_registrations?: number
+          platform?: string
+          super_app_conversions?: number
+          total_users?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
