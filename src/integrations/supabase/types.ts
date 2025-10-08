@@ -38,6 +38,75 @@ export type Database = {
         }
         Relationships: []
       }
+      app_metrics: {
+        Row: {
+          arppu: number
+          arpu: number
+          avg_session_duration: number
+          churn_rate: number
+          conversion_rate: number
+          created_at: string
+          created_by: string | null
+          date: string
+          dau: number
+          id: string
+          mau: number
+          new_downloads: number
+          paying_users: number
+          retention_day1: number
+          retention_day30: number
+          retention_day7: number
+          revenue: number
+          sessions_per_user: number
+          total_downloads: number
+          updated_at: string
+        }
+        Insert: {
+          arppu?: number
+          arpu?: number
+          avg_session_duration?: number
+          churn_rate?: number
+          conversion_rate?: number
+          created_at?: string
+          created_by?: string | null
+          date: string
+          dau?: number
+          id?: string
+          mau?: number
+          new_downloads?: number
+          paying_users?: number
+          retention_day1?: number
+          retention_day30?: number
+          retention_day7?: number
+          revenue?: number
+          sessions_per_user?: number
+          total_downloads?: number
+          updated_at?: string
+        }
+        Update: {
+          arppu?: number
+          arpu?: number
+          avg_session_duration?: number
+          churn_rate?: number
+          conversion_rate?: number
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          dau?: number
+          id?: string
+          mau?: number
+          new_downloads?: number
+          paying_users?: number
+          retention_day1?: number
+          retention_day30?: number
+          retention_day7?: number
+          revenue?: number
+          sessions_per_user?: number
+          total_downloads?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       app_screenshots: {
         Row: {
           created_at: string

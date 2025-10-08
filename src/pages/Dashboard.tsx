@@ -19,6 +19,7 @@ import ShareSaleSection from '@/components/dashboard/ShareSaleSection';
 import ShareSaleHistory from '@/components/dashboard/ShareSaleHistory';
 import InvestorVideosSection from '@/components/dashboard/InvestorVideosSection';
 import { TrafficAnalytics } from '@/components/dashboard/TrafficAnalytics';
+import { AppMetrics } from '@/components/dashboard/AppMetrics';
 
 const Dashboard = () => {
   const { user, loading } = useAuth();
@@ -169,8 +170,13 @@ const Dashboard = () => {
               }}
             />
 
-            {/* Аналитика трафика - видна только инвесторам */}
-            {totalPercentage > 0 && <TrafficAnalytics />}
+            {/* Аналитика VINNI SUPER APP - видна только инвесторам */}
+            {totalPercentage > 0 && (
+              <>
+                <AppMetrics />
+                <TrafficAnalytics />
+              </>
+            )}
 
             {/* Блок покупки доли (инвестирования) */}
             <InvestmentForm
