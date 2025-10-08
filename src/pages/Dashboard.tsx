@@ -172,9 +172,6 @@ const Dashboard = () => {
             {/* Аналитика трафика - видна только инвесторам */}
             {totalPercentage > 0 && <TrafficAnalytics />}
 
-            {/* Аналитика трафика - показываем только инвесторам */}
-            {totalPercentage > 0 && <TrafficAnalytics />}
-
             {/* Блок покупки доли (инвестирования) */}
             <InvestmentForm
               showPayment={showPayment}
