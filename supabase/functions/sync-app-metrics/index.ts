@@ -17,11 +17,17 @@ Deno.serve(async (req) => {
 
     console.log('Fetching VINNI Factory metrics...');
     
+    const vinniApiKey = Deno.env.get('VINNI_FACTORY_API_KEY');
     let factoryData;
     
     try {
       // Получаем данные из VINNI Factory API
-      const factoryResponse = await fetch('https://iphktqakqfuucsismcgq.supabase.co/functions/v1/statistics-api');
+      const factoryResponse = await fetch('https://iphktqakqfuucsismcgq.supabase.co/functions/v1/statistics-api', {
+        headers: {
+          'Authorization': `Bearer ${vinniApiKey}`,
+          'Content-Type': 'application/json',
+        }
+      });
       
       if (!factoryResponse.ok) {
         const errorText = await factoryResponse.text();
