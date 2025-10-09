@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { SyncMetricsButton } from './SyncMetricsButton';
 import { 
   Users, 
   Download, 
@@ -147,18 +148,24 @@ export const AppMetrics = () => {
   if (!latestMetric) {
     return (
       <Card className="glass-premium neuro-card border border-white/10 rounded-3xl p-8 mb-8">
-        <div className="text-center text-white/60">Данные пока не добавлены</div>
+        <div className="text-center">
+          <p className="text-white/60 mb-4">Данные метрик еще не загружены</p>
+          <SyncMetricsButton />
+        </div>
       </Card>
     );
   }
 
   return (
     <Card className="glass-premium neuro-card border border-white/10 rounded-3xl p-8 mb-8">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold bg-neon-gradient bg-clip-text text-transparent mb-2">
-          VINNI SUPER APP Metrics
-        </h2>
-        <p className="text-white/60">Ключевые метрики приложения</p>
+      <div className="mb-8 flex justify-between items-start">
+        <div>
+          <h2 className="text-3xl font-bold bg-neon-gradient bg-clip-text text-transparent mb-2">
+            VINNI SUPER APP Metrics
+          </h2>
+          <p className="text-white/60">Ключевые метрики приложения</p>
+        </div>
+        <SyncMetricsButton />
       </div>
 
       {/* Основные метрики */}
